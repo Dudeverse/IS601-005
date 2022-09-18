@@ -1,2 +1,4 @@
-# IS601-005
-A repo for the class IS601-005 
+IS601-005
+Name: Surya
+Practicing Dudeism since 2021, likes to take it easy. Into 
+computers, music, movies, basically art in general. 
