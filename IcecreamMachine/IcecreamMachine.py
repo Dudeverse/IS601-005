@@ -138,21 +138,26 @@ class IceCreamMachine:
         if total == str(expected):
             print("Thank you! Enjoy your icecream!")
             self.total_icecreams += 1
-            self.total_sales += expected # only if successful
+            self.total_sales += float(expected) # only if successful
             self.reset()
         else:
             raise InvalidPaymentException
             
     def calculate_cost(self):
-        # TODO add the calculation expression/logic for the inprogress_icecream
-        # UCID - se352
-        # Date - 17th October 2022
-        
+        # UCID - se352, Date - 17th October 2022
+        # inprogress_icecream is a list containing different class objects like Container, Flavour & Toppings.
+        # To calculate the total cost, simply summing up the "cost" instance attribute of each class will do the job.
+        # I have writtten a for loop that iterates through the list of objects and grabs the cost of each item. 
+        # Append those items to a list and total cost can be calculated by using the sum() method.
+        # finally the currency variable is used to store the formatted value of the sum. (upto two decimal places was asked)
         x = self.inprogress_icecream
         y = []
         for each_item in x:
             y.append(each_item.cost)
-        return sum(y)
+            z = float(sum(y))
+            currency = f'{z:.2f}'
+
+        return currency
 
     def run(self):
         if self.currently_selecting == STAGE.Container:
@@ -166,7 +171,7 @@ class IceCreamMachine:
             self.handle_toppings(toppings)
         elif self.currently_selecting == STAGE.Pay:
             expected = self.calculate_cost()
-            total = input(f"Your total is {expected}, please enter the exact value.\n")
+            total = input(f"Your total is {expected}$, please enter the exact value.\n")
             self.handle_pay(expected, total)
             choice = input("What would you like to do? (icecream or quit)\n")
             if choice == "quit":
