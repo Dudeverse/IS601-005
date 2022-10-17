@@ -145,8 +145,9 @@ class IceCreamMachine:
             
     def calculate_cost(self):
         # TODO add the calculation expression/logic for the inprogress_icecream
-        # self.inprogress_icecream array contains the different parts and costs of the ice-cream. go through inheritance to figure out 
-        # a way to calculate total cost.
+        # UCID - se352
+        # Date - 17th October 2022
+        
         x = self.inprogress_icecream
         y = []
         for each_item in x:
