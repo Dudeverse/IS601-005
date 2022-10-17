@@ -46,8 +46,11 @@ class IceCreamMachine:
 
 
     containers = [Container(name="Waffle Cone", cost=1.5), Container(name="Sugar Cone", cost=1), Container("Cup", cost=1)]
+    
     flavors = [Flavor(name="Vanilla", quantity=100, cost=1), Flavor(name="Chocolate", quantity=100, cost=1), Flavor(name="Strawberry", quantity=100, cost=1)]
+    
     toppings = [Toppings(name="Sprinkles", quantity=200, cost=.25), Toppings(name="Chocolate Chips", quantity=200, cost=.25), Toppings(name="M&Ms", quantity=200, cost=.25), \
+    
     Toppings(name="Gummy Bears", quantity=200, cost=.25), Toppings(name="Peanuts", quantity=200, cost=.25)] 
 
 
@@ -142,7 +145,13 @@ class IceCreamMachine:
             
     def calculate_cost(self):
         # TODO add the calculation expression/logic for the inprogress_icecream
-        return 10000
+        # self.inprogress_icecream array contains the different parts and costs of the ice-cream. go through inheritance to figure out 
+        # a way to calculate total cost.
+        x = self.inprogress_icecream
+        y = []
+        for each_item in x:
+            y.append(each_item.cost)
+        return sum(y)
 
     def run(self):
         if self.currently_selecting == STAGE.Container:
