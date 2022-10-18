@@ -169,13 +169,22 @@ class IceCreamMachine:
         elif self.currently_selecting == STAGE.Toppings:
             toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
             self.handle_toppings(toppings)
-        elif self.currently_selecting == STAGE.Pay:
-            expected = self.calculate_cost()
-            total = input(f"Your total is {expected}$, please enter the exact value.\n")
-            self.handle_pay(expected, total)
-            choice = input("What would you like to do? (icecream or quit)\n")
-            if choice == "quit":
-                exit()
+        elif self.currently_selecting == STAGE.Pay:# Handling the conditions of atleast one topping or one flavor
+            if len(self.inprogress_icecream) == 1:
+                select_option = input("You have to select atleast one flavor (or) one topping, else enter ('quit'):")
+                if select_option.lower() == "flavor":
+                    self.currently_selecting = STAGE.Flavor
+                elif select_option.lower() == "toppings":
+                    self.currently_selecting = STAGE.Toppings
+                elif select_option.lower() == "quit":
+                    exit()
+            else:        
+                expected = self.calculate_cost()
+                total = input(f"Your total is {expected}$, please enter the exact value.\n")
+                self.handle_pay(expected, total)
+                choice = input("What would you like to do? (icecream or quit)\n")
+                if choice == "quit":
+                    exit()
         self.run()
 
     def start(self):
