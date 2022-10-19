@@ -141,7 +141,7 @@ class IceCreamMachine:
             self.total_sales += float(expected) # only if successful
             self.reset()
         else:
-            raise InvalidPaymentException
+            raise InvalidPaymentException("Invalid Payment entered.")
             
     def calculate_cost(self):
         # UCID - se352, Date - 17th October 2022
@@ -169,10 +169,14 @@ class IceCreamMachine:
         elif self.currently_selecting == STAGE.Toppings:
             toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
             self.handle_toppings(toppings)
-        elif self.currently_selecting == STAGE.Pay:# Handling the conditions of atleast one topping or one flavor
+        elif self.currently_selecting == STAGE.Pay:
+            # Handling the conditions of atleast one topping or one flavor
+            # The following snippet gives a set of options to the user to either choose a flavor or topping.
+            # They can quit here if they don't want the icecream.
+            # TODO ADD AN EXCeption to this snippet below.
             if len(self.inprogress_icecream) == 1:
-                select_option = input("You have to select atleast one flavor (or) one topping, else enter ('quit'):")
-                if select_option.lower() == "flavor":
+                select_option = input("Please select atleast one flavor (or) topping, else quit (flavors or toppings or quit):\n")
+                if select_option.lower() == "flavors":
                     self.currently_selecting = STAGE.Flavor
                 elif select_option.lower() == "toppings":
                     self.currently_selecting = STAGE.Toppings
@@ -180,11 +184,16 @@ class IceCreamMachine:
                     exit()
             else:        
                 expected = self.calculate_cost()
-                total = input(f"Your total is {expected}$, please enter the exact value.\n")
-                self.handle_pay(expected, total)
-                choice = input("What would you like to do? (icecream or quit)\n")
-                if choice == "quit":
-                    exit()
+                try:
+                    total = input(f"Your total is {expected}$, please enter the exact value.\n")
+                    self.handle_pay(expected, total)
+                except InvalidPaymentException as ipe:
+                    print(ipe)
+                    print("Couldn't calculate total, please try again.")
+                finally:
+                    choice = input("What would you like to do? (icecream or quit)\n")
+                    if choice == "quit":
+                        exit()
         self.run()
 
     def start(self):
