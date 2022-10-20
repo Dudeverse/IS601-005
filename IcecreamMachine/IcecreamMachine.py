@@ -189,7 +189,6 @@ class IceCreamMachine:
 
 
 
-        # TODO ADD oos exception.
         elif self.currently_selecting == STAGE.Flavor:
             try:
                 flavor = input(f"Would you like {', '.join(list(map(lambda f:f.name.lower(), filter(lambda f: f.in_stock(), self.flavors))))}? Or type next.\n")
@@ -237,7 +236,6 @@ class IceCreamMachine:
 
 
 
-            # TODO  add oos
         elif self.currently_selecting == STAGE.Toppings:
             try:
                 toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
