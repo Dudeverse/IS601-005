@@ -9,7 +9,7 @@ class Usable:
     quantity = 0
     cost = 99
 
-    def __init__(self, name, quantity = 3, cost=99):
+    def __init__(self, name, quantity = 5, cost=99):
         self.name = name
         self.quantity = quantity
         self.cost = cost
@@ -17,7 +17,7 @@ class Usable:
     def use(self):
         self.quantity -= 1
         if (self.quantity < 0):
-            raise OutOfStockException("Item is out of stock.")
+            raise OutOfStockException("Item is out of stock.")# UCID se352, Date 19 October 2022
         return self.quantity 
 
     def in_stock(self):
@@ -40,7 +40,7 @@ class STAGE(Enum):
 
 class IceCreamMachine:
     # Constants https://realpython.com/python-constants/
-    USES_UNTIL_CLEANING = 4
+    USES_UNTIL_CLEANING = 100
     MAX_SCOOPS = 3
     MAX_TOPPINGS = 3
 
@@ -82,12 +82,12 @@ class IceCreamMachine:
                 c.use()
                 self.inprogress_icecream.append(c)
                 return
-        raise InvalidChoiceException("Invalid choice of container.")
+        raise InvalidChoiceException("Invalid choice of container.")# UCID se352, Date 19 October 2022
 
     def pick_flavor(self, choice):
-        if self.remaining_uses <= 0:
+        if self.remaining_uses <= 0:# UCID se352, Date 19 October 2022
             raise NeedsCleaningException("Couldn't add the flavor. Icecream Machine needs cleaning")
-        if self.remaining_scoops <= 0:
+        if self.remaining_scoops <= 0:# UCID se352, Date 19 October 2022
             raise ExceededRemainingChoicesException("Didn't add the scoop. You have exceeded the maximum scoop limit")
         for f in self.flavors:
             if f.name.lower() == choice:
@@ -96,10 +96,10 @@ class IceCreamMachine:
                 self.remaining_scoops -= 1
                 self.remaining_uses -= 1
                 return
-        raise InvalidChoiceException("Invalid choice of flavor.")
+        raise InvalidChoiceException("Invalid choice of flavor.")# UCID se352, Date 19 October 2022
 
     def pick_toppings(self, choice):
-        if self.remaining_toppings <= 0:
+        if self.remaining_toppings <= 0:# UCID se352, Date 19 October 2022
             raise ExceededRemainingChoicesException("Did not add the toppings. You have exceeded the maximum toppings limit")
         for t in self.toppings:
             if t.name.lower() == choice:
@@ -107,7 +107,7 @@ class IceCreamMachine:
                 self.inprogress_icecream.append(t)
                 self.remaining_toppings -= 1
                 return
-        raise InvalidChoiceException("Invalid choice of Toppings.")
+        raise InvalidChoiceException("Invalid choice of Toppings.")# UCID se352, Date 19 October 2022
 
     def reset(self):
         self.remaining_scoops = self.MAX_SCOOPS
@@ -141,7 +141,7 @@ class IceCreamMachine:
             self.total_sales += float(expected) # only if successful
             self.reset()
         else:
-            raise InvalidPaymentException("Invalid Payment")
+            raise InvalidPaymentException("Invalid Payment")# UCID se352, Date 19 October 2022
             
     def calculate_cost(self):
         # UCID - se352, Date - 17th October 2022
@@ -168,6 +168,8 @@ class IceCreamMachine:
                 else:
                     print("no containers left, Sorry!")
                     exit()
+
+                    
             # ucid - se352
             # Date October 19, 2022
             # OUT OF STOCK EXCEPTION
@@ -175,6 +177,8 @@ class IceCreamMachine:
                 print(oos)
                 print("Please select from available options")
                 self.currently_selecting = STAGE.Container
+
+
             # ucid - se352
             # Date October 19, 2022
             # INVALID CHOICE EXCEPTION
@@ -190,6 +194,8 @@ class IceCreamMachine:
             try:
                 flavor = input(f"Would you like {', '.join(list(map(lambda f:f.name.lower(), filter(lambda f: f.in_stock(), self.flavors))))}? Or type next.\n")
                 self.handle_flavor(flavor)
+
+
             # ucid - se352
             # Date October 19, 2022
             # INVALID CHOICE EXCEPTION
@@ -197,6 +203,8 @@ class IceCreamMachine:
                 print(ice)
                 print("Please enter a valid item from the available flavors.")
                 self.currently_selecting = STAGE.Flavor
+
+
             # ucid - se352
             # Date October 19, 2022
             # NEEDSCLEANING EXCEPTION TAKES INPUT FROM USER TO CONTINUE
@@ -208,6 +216,7 @@ class IceCreamMachine:
                     self.currently_selecting = STAGE.Flavor
                 elif(do_clean.lower() == "no"):
                     exit()
+
             # ucid - se352
             # Date October 19, 2022
             # EXCEEDED REMAINING CHOICES EXCEPTION
@@ -215,6 +224,15 @@ class IceCreamMachine:
                 print(erce)
                 print("Please enter 'next'")
                 self.currently_selecting = STAGE.Flavor
+
+            # ucid - se352
+            # Date October 19, 2022
+            # OUT OF STOCK EXCEPTION
+            except OutOfStockException as oos:
+                print(oos)
+                print("Please select from available options")
+                self.currently_selecting = STAGE.Flavor
+
 
 
 
@@ -224,6 +242,7 @@ class IceCreamMachine:
             try:
                 toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
                 self.handle_toppings(toppings)
+
             # ucid - se352
             # Date October 19, 2022
             # INVALID CHOICE EXCEPTION
@@ -231,6 +250,7 @@ class IceCreamMachine:
                 print(ice)
                 print("Please enter a valid item from the available Toppings.")
                 self.currently_selecting = STAGE.Toppings
+
             # ucid - se352
             # Date October 19, 2022
             # EXCEEDED REMAINING CHOICES EXCEPTION
@@ -239,6 +259,13 @@ class IceCreamMachine:
                 print("Please enter 'done'")
                 self.currently_selecting = STAGE.Toppings
 
+            # ucid - se352
+            # Date October 19, 2022
+            # OUT OF STOCK EXCEPTION
+            except OutOfStockException as oos:
+                print(oos)
+                print("Please select from available options")
+                self.currently_selecting = STAGE.Toppings
 
 
 
