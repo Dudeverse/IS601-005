@@ -9,7 +9,7 @@ class Usable:
     quantity = 0
     cost = 99
 
-    def __init__(self, name, quantity = 5, cost=99):
+    def __init__(self, name, quantity = 10, cost=99):
         self.name = name
         self.quantity = quantity
         self.cost = cost
@@ -191,8 +191,14 @@ class IceCreamMachine:
 
         elif self.currently_selecting == STAGE.Flavor:
             try:
-                flavor = input(f"Would you like {', '.join(list(map(lambda f:f.name.lower(), filter(lambda f: f.in_stock(), self.flavors))))}? Or type next.\n")
-                self.handle_flavor(flavor)
+                if len(list(map(lambda f:f.name.lower(), filter(lambda f: f.in_stock(), self.flavors)))) > 0:
+                    flavor = input(f"Would you like {', '.join(list(map(lambda f:f.name.lower(), filter(lambda f: f.in_stock(), self.flavors))))}? Or type next.\n")
+                    self.handle_flavor(flavor)
+                else:
+                    print("No flavours left. Continuing to toppings" )
+                    self.currently_selecting = STAGE.Toppings
+
+
 
 
             # ucid - se352
@@ -238,8 +244,12 @@ class IceCreamMachine:
 
         elif self.currently_selecting == STAGE.Toppings:
             try:
-                toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
-                self.handle_toppings(toppings)
+                if len(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(),  self.toppings)))) > 0:
+                    toppings = input(f"Would you like {', '.join(list(map(lambda t:t.name.lower(), filter(lambda t: t.in_stock(), self.toppings))))}? Or type done.\n")
+                    self.handle_toppings(toppings)
+                else:
+                    print("No toppings left, continuing to payment")
+                    self.currently_selecting = STAGE.Pay
 
             # ucid - se352
             # Date October 19, 2022
