@@ -86,7 +86,7 @@ class IceCreamMachine:
 
     def pick_flavor(self, choice):
         if self.remaining_uses <= 0:# UCID se352, Date 19 October 2022
-            raise NeedsCleaningException("Couldn't add the flavor. Icecream Machine needs cleaning")
+            raise NeedsCleaningException
         if self.remaining_scoops <= 0:# UCID se352, Date 19 October 2022
             raise ExceededRemainingChoicesException("Didn't add the scoop. You have exceeded the maximum scoop limit")
         for f in self.flavors:
@@ -135,7 +135,7 @@ class IceCreamMachine:
             self.pick_toppings(toppings)
 
     def handle_pay(self, expected, total):
-        if total == str(expected):
+        if float(total) == (expected):
             print("Thank you! Enjoy your icecream!")
             self.total_icecreams += 1
             self.total_sales += float(expected) # only if successful
@@ -155,9 +155,9 @@ class IceCreamMachine:
         for each_item in x:
             y.append(each_item.cost)
             z = float(sum(y))
-            currency = f'{z:.2f}'
+            currnecy = z
 
-        return currency
+        return z
 
     def run(self):
         if self.currently_selecting == STAGE.Container:
@@ -215,12 +215,12 @@ class IceCreamMachine:
             # NEEDSCLEANING EXCEPTION TAKES INPUT FROM USER TO CONTINUE
             except NeedsCleaningException as nce:
                 print(nce)
-                do_clean = input("Do you want the machine to be cleaned?( yes or no ):")
-                if (do_clean.lower() == "yes"):
-                    self.clean_machine()
-                    self.currently_selecting = STAGE.Flavor
-                elif(do_clean.lower() == "no"):
-                    exit()
+                do_clean = "no"
+                while do_clean == "no":
+                    do_clean = input("Do you want the machine to be cleaned?( yes or no ):")
+                self.clean_machine()
+                self.currently_selecting = STAGE.Flavor
+
 
             # ucid - se352
             # Date October 19, 2022
@@ -294,7 +294,8 @@ class IceCreamMachine:
             else:        
                 expected = self.calculate_cost()
                 try:
-                    total = input(f"Your total is {expected}$, please enter the exact value.\n")
+                    currency = f"{expected:.2f}"
+                    total = input(f"Your total is {currency}$, please enter the exact value.\n")
                     self.handle_pay(expected, total)
                     choice = input("What would you like to do? (icecream or quit)\n")
                     if choice == "quit":
