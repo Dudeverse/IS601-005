@@ -14,7 +14,7 @@ def first_order(machine):
     machine.handle_flavor("vanilla")
     machine.handle_flavor("next")
     machine.handle_toppings("done")
-    machine.handle_pay(2.00,"2.00")
+    machine.handle_pay(10000,"10000")
     return machine
 @pytest.fixture
 def second_order(first_order, machine):
@@ -22,7 +22,7 @@ def second_order(first_order, machine):
     machine.handle_flavor("vanilla")
     machine.handle_flavor("next")
     machine.handle_toppings("done")
-    machine.handle_pay(2.00,"2.00")
+    machine.handle_pay(10000,"10000")
     return machine
 
 def test_production_line(second_order):

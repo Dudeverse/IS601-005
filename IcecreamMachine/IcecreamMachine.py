@@ -148,15 +148,12 @@ class IceCreamMachine:
         # inprogress_icecream is a list containing different class objects like Container, Flavour & Toppings.
         # To calculate the total cost, simply summing up the "cost" instance attribute of each class will do the job.
         # I have writtten a for loop that iterates through the list of objects and grabs the cost of each item. 
-        # Append those items to a list and total cost can be calculated by using the sum() method.
-        # finally the currency variable is used to store the formatted value of the sum. (upto two decimal places was asked)
+        # Append those items to a list and total cost can be calculated by using the sum() method and stored the value in z.
         x = self.inprogress_icecream
         y = []
         for each_item in x:
             y.append(each_item.cost)
             z = float(sum(y))
-            currnecy = z
-
         return z
 
     def run(self):
@@ -293,9 +290,9 @@ class IceCreamMachine:
                     exit()
             else:        
                 expected = self.calculate_cost()
-                try:
-                    currency = f"{expected:.2f}"
-                    total = input(f"Your total is {currency}$, please enter the exact value.\n")
+                try:# currency format handling, UCID - se352, Date 17th October, 2022
+                    currency = f"{expected:.2f}"#changing the format of cost
+                    total = input(f"Your total is {currency}$, please enter the exact value.\n")#displaying the ##.## format
                     self.handle_pay(expected, total)
                     choice = input("What would you like to do? (icecream or quit)\n")
                     if choice == "quit":
