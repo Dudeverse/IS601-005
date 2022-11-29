@@ -9,6 +9,7 @@ on:
       - dev
       - DeploymentSetup
       - Flask-Sample-Pytest
+      - Flask-Sample-HW
 
 # Your workflows jobs.
 jobs:
