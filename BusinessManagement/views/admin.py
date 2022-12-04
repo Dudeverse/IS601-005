@@ -19,7 +19,7 @@ def importCSV():
         if file.filename == '':
             flash('No selected file', "warning")
             return redirect(request.url)
-        # TODO importcsv-1 check that it's a .csv file, return a proper flash message if it's not
+        # TODO importcsv-1 check that it's a .csv file, return a proper flash message if it's not|se352--Nov 30 2022|
         if len(file.filename) < 4 or file.filename[len(file.filename)-4:] != ".csv":
             flash("Not a csv", "danger")
             return redirect(request.url)
@@ -56,12 +56,11 @@ def importCSV():
                             company_data[key] = row[key]
                     elif key in employees_keys:
                         employee_data[key] = row[key]
+            # TODO importcsv-3 extract company data and append to company list as a dict only with company data
                 companies.append(company_data)
+            # TODO importcsv-4 extract employee data and append to employee list as a dict only with employee data 
                 employees.append(employee_data)
 
-            # TODO importcsv-3 extract company data and append to company list as a dict only with company data
-            
-            # TODO importcsv-4 extract employee data and append to employee list as a dict only with employee data
 
             print(len(companies))
             print(len(employees))
@@ -78,7 +77,7 @@ def importCSV():
                     flash("There was an error loading in the csv data", "danger")
             else:
                 # TODO importcsv-6 display flash message (info) that no companies were loaded|se352--Nov 30 2022|
-                flash("No companies were added", "danger")
+                flash("No companies were added", "info")
                 pass
             if len(employees) > 0:
                 print(f"Inserting or updating {len(employees)} employees")
@@ -91,7 +90,7 @@ def importCSV():
                     traceback.print_exc()
                     flash("There was an error loading in the csv data", "danger")
             else:
-                # TODO importcsv-8 display flash message (info) that no companies were loaded|se352--Nov 30 2022|
-                flash("No companies were loaded", "danger")
+                # TODO importcsv-8 display flash message (info) that no employees were loaded|se352--Nov 30 2022|
+                flash("No employeess were loaded", "info")
                 pass
     return render_template("upload.html")

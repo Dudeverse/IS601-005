@@ -12,8 +12,29 @@
             city
             website
             #}
-            {# use this for country/state selection #}
-            {% include "country_state_selector.html" %}
+            <div class="form-group mb-3">
+                <label class="form-label" for="name"> Company name</label>
+                <input class="form-control" id="name" name="name" />
+            </div>
+            
+            <div class="form-group mb-3">
+                <label class="form-label" for="address"> Address</label>
+                <input class="form-control" id="address" name="address" />
+            </div>
+            
+            <div class="form-group mb-3">
+                <label class="form-label" for="city"> City </label>
+                <input class="form-control" id="city" name="city" />
+            </div>
+
+                {# use this for country/state selection #}
+                {% include "country_state_selector.html" %}
+
+            <div class="form-group mb-3">
+                <label class="form-label" for="website"> Website </label>
+                <input class="form-control" id="website" name="website" />
+            </div>
+
             <input type="submit" class="btn btn-primary" value="Save Company" />
         </form>
     </div>
