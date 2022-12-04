@@ -7,14 +7,34 @@
         <form method="POST">
             {#
             generate fields with proper types for
-            name
-            address
-            city
-            website
+            name DONE
+            address DONE
+            city DONE
+            website DONE
             and prefill the fields with loaded company data
             #}
+            <div class="form-group mb-3">
+                <label class="form-label" for="name">name</label>
+                <input class="form-control" id="name" name="name" value="{{row.name}}"/>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label" for="address">Address</label>
+                <input class="form-control" id="address" name="address" value="{{row.address}}" />
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label" for="city">city</label>
+                <input class="form-control" id="city" name="city" value="{{row.city}}" />
+            </div>
+
             {# use this for country/state selection #}
             {% include "country_state_selector.html" %}
+
+            <div class="form-group mb-3">
+                <label class="form-label" for="website">website</label>
+                <input class="form-control" id="website" name="website" value="{{row.website}}" />
+            </div>
+            
+            
             <input type="submit" class="btn btn-primary" value="Save Company" />
         </form>
     </div>

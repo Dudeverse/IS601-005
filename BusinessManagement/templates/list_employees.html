@@ -48,7 +48,6 @@
             <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
                 value="{{request.args.get('limit') or '10'}}" />
         </div>
-
         <div class="col-12">
             
             <input type="submit" class="btn btn-primary" value="Filter" />
@@ -72,8 +71,9 @@
                 {% endfor %}
             </tr>
         </thead>
-        {% for r in rows %}
+        
         <tbody>
+            {% for r in rows %}
             <tr>
                 {% for v in r.values() %}
                 <td>{{v}}</td>
@@ -90,8 +90,9 @@
             an edit button that passes the employee id to employee edit
             a delete button that passes the employee id and the request args to the employee delete route
             #}
+            {% endfor %}
         </tbody>
-        {% endfor %}
+        
         {% else %}
         <tbody>
             <tr>

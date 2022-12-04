@@ -5,7 +5,7 @@ import re
 employee = Blueprint('employee', __name__, url_prefix='/employee')
 
 
-@employee.route("/search", methods=["GET"])
+@employee.route("/search", methods=["GET"]) # se352 Dec-03-2022
 def search():
     rows = []
     # DO NOT DELETE PROVIDED COMMENTS
@@ -73,6 +73,8 @@ def search():
     # hint: use allowed_columns in template to generate sort dropdown
     return render_template("list_employees.html", rows=rows, allowed_columns=field_columns)
 
+
+# se352 Dec-03-2022
 @employee.route("/add", methods=["GET","POST"])
 def add():
     if request.method == "POST":
@@ -114,6 +116,8 @@ def add():
             flash(str(e), "danger")
     return render_template("add_employee.html")
 
+
+# se352 Dec-03-2022
 @employee.route("/edit", methods=["GET", "POST"])
 def edit():
     # TODO edit-1 request args id is required (flash proper error message)
@@ -171,6 +175,8 @@ def edit():
     # TODO edit-10 pass the employee data to the render template
     return render_template("edit_employee.html", row=row)
 
+
+# se352 Dec-03-2022
 @employee.route("/delete", methods=["GET"])
 def delete():
     # TODO delete-1 delete employee by id
