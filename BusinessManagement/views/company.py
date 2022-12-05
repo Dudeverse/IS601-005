@@ -201,8 +201,9 @@ def delete():
     args = {**request.args}
     if id:
         try:
-            result = DB.delete("DELETE FROM IS601_MP2_Companies WHERE id = %s", id)
-            if result.status:
+            result = DB.delete("DELETE FROM IS601_MP2_Employees WHERE id IN (SELECT id FROM IS601_MP2_Employees WHERE  company_id = %s) ", id)
+            result2 = DB.delete("DELETE FROM IS601_MP2_Companies  WHERE id = %s", id)
+            if result.status and result2.status:
                 flash("Deleted record", "success")
         except Exception as e:
             # TODO make this user-friendly
