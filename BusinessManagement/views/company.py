@@ -8,7 +8,7 @@ def search():
     # DO NOT DELETE PROVIDED COMMENTS
     # TODO search-1 retrieve id, name, address, city, country, state, zip, website, employee count for the company
     # don't do SELECT *
-    query = "SELECT id, name, address, city, country, state, zip, website FROM IS601_MP2_Companies  WHERE 1=1"
+    query = "SELECT c.id, name, address, city, country, state, zip, website, count(e.id) as 'Employee Count ' FROM IS601_MP2_Companies c JOIN IS601_MP2_Employees e ON c.id = e.company_id WHERE 1=1"
     args = [] # <--- append values to replace %s placeholders
     allowed_columns = ["name", "city", "country", "state"]
     field_columns = zip(allowed_columns, allowed_columns)
@@ -37,6 +37,8 @@ def search():
         if column in allowed_columns \
             and order in ["asc", "desc"]:
             query += f" ORDER BY {column} {order}"
+
+    query += " GROUP BY c.id"
     # TODO search-7 append limit (default 10) or limit greater than 1 and less than or equal to 100
     try:
         if limit and int(limit) > 0 and int(limit) <= 100:
@@ -73,6 +75,7 @@ def add():
         state = request.form.get("state", None)
         country = request.form.get("country", None)
         website = request.form.get("website", None)
+        zipcode = request.form.get("zip", None)
         # TODO add-2 name is required (flash proper error message)
         if name == "":
             flash("Company name is required")
@@ -96,6 +99,10 @@ def add():
         # TODO add-7 website is not required
         if website == "":
             website = None
+        # add-8 zipcode is required
+        if zipcode == "":
+            flash("Zip is required")
+            return redirect(request.url)
 
         has_error = False # use this to control whether or not an insert occurs
         
@@ -103,9 +110,9 @@ def add():
         if not has_error:
             try:
                 result = DB.insertOne("""
-                INSERT INTO IS601_MP2_Companies (name, address, city, state, country, website)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                """,name, address, city, state, country, website 
+                INSERT INTO IS601_MP2_Companies (name, address, city, state, country, website, zip)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, name, address, city, state, country, website, zipcode 
                 ) # <-- TODO add-8 add query and add arguments
                 if result.status:
                     flash("Added Company", "success")
@@ -153,8 +160,11 @@ def edit():
                 flash("state is required")
                 return redirect(request.url)
             # TODO edit-7 country is required (flash proper error message)
-            if state == "":
-                flash("state is required")
+            if country == "":
+                flash("country is required")
+                return redirect(request.url)
+            if zipcode == "":
+                flash("zip is required")
                 return redirect(request.url)
             # TODO edit-8 website is not required
             if website == "":
@@ -173,7 +183,7 @@ def edit():
                 flash(str(e), "danger")
         try:
             # TODO edit-11 fetch the updated data
-            result = DB.selectOne("SELECT name, address, city, state, country, zip website FROM IS601_MP2_Companies as c WHERE c.id = %s", id)
+            result = DB.selectOne("SELECT name, address, city, state, country, zip , website FROM IS601_MP2_Companies as c WHERE c.id = %s", id)
             if result.status:
                 row = result.row
                 

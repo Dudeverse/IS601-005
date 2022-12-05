@@ -107,8 +107,7 @@ def add():
             result = DB.insertOne("""
             INSERT INTO IS601_MP2_Employees (first_name, last_name, company_id, email)
                         VALUES (%s, %s, %s, %s)
-            """,first_name,last_name,company,email
-            ) # <-- TODO add-6 add query and add arguments
+            """, first_name, last_name, company, email ) # <-- TODO add-6 add query and add arguments
             if result.status:
                 flash("Created Employee Record", "success")
         except Exception as e:
@@ -133,7 +132,6 @@ def edit():
             last_name = request.form.get("last_name")
             company = request.form.get("company")
             email = request.form.get("email")
-            company_id = request.form.get("company_id")
             # TODO edit-2 first_name is required (flash proper error message)
             if first_name == "":
                 flash("First name is required")
@@ -146,13 +144,11 @@ def edit():
             if company == "":
                 company = None
             # TODO edit-5 email is required (flash proper error message)
-            regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'  
+
             if email == "":
                 flash("email is required")
                 return redirect(request.url)
-            elif not re.search(regex, email):
-                flash("email is not valid")
-                return redirect(request.url)
+
             data = [first_name, last_name, company, email]
             data.append(id)
             try:
