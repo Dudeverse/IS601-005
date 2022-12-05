@@ -1,13 +1,12 @@
 # Your workflow name.
-name: Deploy to heroku dev.
+name: Deploy to heroku prod2.
 
 # Run workflow on every push to master branch.
 
 on:
   push:
     branches:
-      - dev
-      
+      - prod
 
 # Your workflows jobs.
 jobs:
@@ -18,7 +17,7 @@ jobs:
       SECRET_KEY: ${{secrets.SECRET_KEY}}
       PORT: 8080
       # change to the project directory you're deploying
-      WORKING_DIRECTORY: flask_sample
+      WORKING_DIRECTORY: BusinessManagement
     defaults:
       run:
           working-directory: ${{env.WORKING_DIRECTORY}}
@@ -47,7 +46,7 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           
           # Name of the heroku application to which the build is to be sent.
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_DEV }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME_PROD2 }}
 
           # (Optional, default: "./")
           # Dockerfile directory.
@@ -68,6 +67,5 @@ jobs:
           # For more information look at https://devcenter.heroku.com/articles/process-model
           process_type: web
           
-  
           
 ### ⬆ IMPORTANT PART ⬆ ###
