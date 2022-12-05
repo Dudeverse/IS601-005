@@ -2,13 +2,14 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from sql.db import DB
 company = Blueprint('company', __name__, url_prefix='/company')
 
-@company.route("/search", methods=["GET"])
+@company.route("/search", methods=["GET"]) # se352 on Dec
 def search():
     rows = []
     # DO NOT DELETE PROVIDED COMMENTS
     # TODO search-1 retrieve id, name, address, city, country, state, zip, website, employee count for the company
     # don't do SELECT *
-    query = "SELECT c.id, name, address, city, country, state, zip, website, count(e.id) as 'Employee Count ' FROM IS601_MP2_Companies c JOIN IS601_MP2_Employees e ON c.id = e.company_id WHERE 1=1"
+    query = "SELECT c.id, name, address, city, country, state, zip, website, count(e.id) as 'Employee Count ' FROM IS601_MP2_Companies c JOIN IS601_MP2_Employees e ON c.id = e.company_id or NULL WHERE 1=1"
+    
     args = [] # <--- append values to replace %s placeholders
     allowed_columns = ["name", "city", "country", "state"]
     field_columns = zip(allowed_columns, allowed_columns)
@@ -37,8 +38,9 @@ def search():
         if column in allowed_columns \
             and order in ["asc", "desc"]:
             query += f" ORDER BY {column} {order}"
-
     query += " GROUP BY c.id"
+
+    
     # TODO search-7 append limit (default 10) or limit greater than 1 and less than or equal to 100
     try:
         if limit and int(limit) > 0 and int(limit) <= 100:
@@ -53,6 +55,8 @@ def search():
         flash("enter a valid value", "warning")
     print("query",query)
     print("args", args)
+
+
     try:
         result = DB.selectAll(query, *args)
         if result.status:
@@ -64,7 +68,6 @@ def search():
     return render_template("list_companies.html", rows=rows, allowed_columns=field_columns)
 
 # se352 Dec-04-2022
-
 @company.route("/add", methods=["GET","POST"])
 def add():
     if request.method == "POST":
@@ -76,6 +79,8 @@ def add():
         country = request.form.get("country", None)
         website = request.form.get("website", None)
         zipcode = request.form.get("zip", None)
+
+
         # TODO add-2 name is required (flash proper error message)
         if name == "":
             flash("Company name is required")
@@ -104,7 +109,7 @@ def add():
             flash("Zip is required")
             return redirect(request.url)
 
-        has_error = False # use this to control whether or not an insert occurs
+        has_error = False # use this to control whether or not an insert occurs # se352 Dec-04-2022
         
 
         if not has_error:

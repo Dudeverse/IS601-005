@@ -14,8 +14,6 @@ def search():
     args = [] # <--- append values to replace %s placeholders
     allowed_columns = ["first_name", "last_name", "email", "name"]
     field_columns = zip(allowed_columns, allowed_columns)
-    print(allowed_columns)
-    print(request.args)
     # TODO search-2 get fn, ln, email, company, column, order, limit from request args
     fn = request.args.get("first_name")
     ln = request.args.get("last_name")
@@ -85,23 +83,20 @@ def add():
         email = request.form.get("email", None)
         # TODO add-2 first_name is required (flash proper error message)
         if first_name == "":
-            flash("First name is required")
+            flash("First name is required", "error")
             return redirect(request.url)
         # TODO add-3 last_name is required (flash proper error message)
         if last_name == "":
-            flash("last name is required")
+            flash("last name is required", "error")
             return redirect(request.url)
         # TODO add-4 company (may be None)
         if company == "":
             company = None
-        # TODO add-5 email is required (flash proper error message)
-        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'  
+        # TODO add-5 email is required (flash proper error message) 
         if email == "":
-            flash("email is required")
+            flash("email is required" , "error")
             return redirect(request.url)
-        elif not re.search(regex, email):
-            flash("email is not valid")
-            return redirect(request.url)
+
         
         try:
             result = DB.insertOne("""
@@ -112,7 +107,7 @@ def add():
                 flash("Created Employee Record", "success")
         except Exception as e:
             # TODO add-7 make message user friendly
-            flash(str(e), "danger")
+            flash(f"{str(e)} Record could not be created", "danger")
     return render_template("add_employee.html")
 
 
@@ -134,11 +129,11 @@ def edit():
             email = request.form.get("email")
             # TODO edit-2 first_name is required (flash proper error message)
             if first_name == "":
-                flash("First name is required")
+                flash("First name is required" , "error")
                 return redirect(request.url)
             # TODO edit-3 last_name is required (flash proper error message)
             if last_name == "":
-                flash("last name is required")
+                flash("last name is required" , "error")
                 return redirect(request.url)
             # TODO edit-4 company may be None
             if company == "":
@@ -146,7 +141,7 @@ def edit():
             # TODO edit-5 email is required (flash proper error message)
 
             if email == "":
-                flash("email is required")
+                flash("email is required" , "error")
                 return redirect(request.url)
 
             data = [first_name, last_name, company, email]

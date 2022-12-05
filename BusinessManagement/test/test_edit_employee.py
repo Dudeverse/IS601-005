@@ -50,6 +50,6 @@ def test_edit_employee(client):
     ele = form.select("[name='last_name']")[0]
     print(ele)
     assert ele.get("value") == '_test2'
-    #ele = form.select("[name='company']")[0]
-    #print("Element", ele.get("value"))
-    #assert int(ele.get("value") )== -1 
+    ele = form.select("[name='company']")[0]
+    assert int(ele.get("value")) == -1 
+
