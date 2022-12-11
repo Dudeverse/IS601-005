@@ -61,7 +61,7 @@ def list():
     except Exception as e:
         print(e)
         flash("Error getting roles", "danger")
-    return render_template("roles_list.html", rows=rows)
+    return render_template("role_list.html", rows=rows)
 
 @roles.route("/delete", methods=["GET"])
 @admin_permission.require(http_exception=403)
