@@ -40,7 +40,7 @@ class LoginForm(AuthForm):
         if "@" in email:
             try:
                 validate_email(email)
-            except:
+            except ValidationError as ve:
                 raise ValidationError("Invalid email address")
         else:
             is_valid_username(email)
