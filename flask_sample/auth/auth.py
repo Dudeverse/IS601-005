@@ -13,6 +13,7 @@ from flask_principal import Identity, AnonymousIdentity, \
 
 auth = Blueprint('auth', __name__, url_prefix='/',template_folder='templates')
 
+# se352 dec 11 2022
 def check_duplicate(e):
 
     import re
