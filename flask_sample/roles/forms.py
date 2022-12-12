@@ -7,3 +7,5 @@ class RoleForm(FlaskForm):
     description = TextAreaField ("Description", validators=[InputRequired()])
     is_active = BooleanField("Is Active")
     submit = SubmitField("Save")
+
+    # se352 creating a new pull request
