@@ -1,7 +1,7 @@
 {% from "_dropdown_nav.html" import dropdown_nav %}
 <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Surya Simple Shop</a>
+        <a style = "color: rgba(12, 37, 232, 0.881);font-size: 25px;" class="navbar-brand" href="#">Surya Simple Shop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -10,11 +10,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if not current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth.login')}}">Login</a>
+                <li style="font-style: oblique; font-size: 25px;" class="nav-item">
+                    <a style = "color: rgba(12, 37, 232, 0.881);" class="nav-link" href="{{url_for('auth.login')}}">Login</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth.register')}}">Register</a>
+                <li style= "font-style: oblique; font-size: 25px;" class="nav-item">
+                    <a style = "color: rgba(12, 37, 232, 0.881);" class="nav-link" href="{{url_for('auth.register')}}">Register</a>
                 </li>
                 {% else %}
                 <li class="nav-item">

@@ -9,7 +9,7 @@ def is_valid_username(username):
     print("re",r)
     if not r:
         print("validation error")
-        raise ValidationError("Invalid username format")
+        raise ValidationError("Invalid username, please refrain from using capitals and spaces.")
 
 class AuthForm(FlaskForm):
     # shared form that groups most of our validations together to reduce repetition
