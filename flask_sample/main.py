@@ -13,7 +13,7 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 print(CURR_DIR)
 sys.path.append(CURR_DIR)
 
-# custom error pages
+# custom error pages # for ms1 commit
 def page_not_found(e):
     return render_template('404.html'), 404
 
