@@ -9,6 +9,6 @@ class ItemForm(FlaskForm):
     category = StringField("category", validators=[DataRequired(), Length(max=30)])
     stock = IntegerField("stock", validators=[NumberRange(min=0)])
     unit_price = IntegerField("unit price", validators=[NumberRange(min=0)])
-    visibility = BooleanField("Is Active")
+    visibility = BooleanField("Visibility")
     image = URLField("image", validators=[Optional()])
     submit = SubmitField("Save")

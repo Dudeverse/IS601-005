@@ -25,7 +25,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="card-text lead">
-                        Cost: {{row["cost"]}}
+                        unit_price: {{row["unit_price"]}}
                     </div>
                     <form action="{{url_for('shop.cart')}}" method="POST">
                         <input type="hidden" name="id" value="{{row['id']}}" />

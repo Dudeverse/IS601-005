@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Items{% endblock %}
+{% block title %}Products List{% endblock %}
 
 <!-- content -->
 {% block content %}
@@ -7,5 +7,5 @@
 {% set view = "shop.item" %}
 {% set edit = "shop.item" %}
 {% set delete = "shop.delete" %}
-{{render_table("Items", rows, ["user_id"], view, edit, delete)}}
+{{render_table("Products", rows, ["user_id"], view, edit, delete)}}
 {% endblock %}
