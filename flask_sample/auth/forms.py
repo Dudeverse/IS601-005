@@ -8,8 +8,8 @@ def is_valid_username(username):
     r = re.fullmatch("^[a-z0-9_-]{2,30}$", username)
     print("re",r)
     if not r:
-        print("validation errr")
-        raise ValidationError("Invalid username format")
+        print("validation error")
+        raise ValidationError("Invalid username, please refrain from using capitals and spaces.")
 
 class AuthForm(FlaskForm):
     # shared form that groups most of our validations together to reduce repetition
@@ -40,7 +40,7 @@ class LoginForm(AuthForm):
         if "@" in email:
             try:
                 validate_email(email)
-            except:
+            except ValidationError as ve:
                 raise ValidationError("Invalid email address")
         else:
             is_valid_username(email)
