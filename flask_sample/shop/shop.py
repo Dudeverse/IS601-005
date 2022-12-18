@@ -130,7 +130,11 @@ def shop_list():
         flash("There was a problem loading items", "danger")
     return render_template("shop.html", rows=rows, allowed_columns=field_columns)
 
+
+
+
 @shop.route("/cart", methods=["GET","POST"])
+@login_required
 def cart():
     product_id = request.form.get("product_id")
     id = request.form.get("id", product_id)
@@ -145,6 +149,7 @@ def cart():
                 if result.status and result.row:
                     unit_price = result.row["unit_price"]
                     name = result.row["name"]
+                    print("product id", product_id)
                     if product_id: # update from cart
                         result = DB.insertOne("""
                         UPDATE IS601_S_Cart SET
@@ -180,6 +185,7 @@ def cart():
         else:
             # assuming delete
             try:
+                print(product_id)
                 result = DB.delete("DELETE FROM IS601_S_Cart where product_id = %s and user_id = %s", id, user_id)
                 if result.status:
                     flash("Deleted item from cart", "success")
