@@ -1,7 +1,7 @@
 {% from "_dropdown_nav.html" import dropdown_nav %}
 <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
-        <a style = "color: rgba(12, 37, 232, 0.881);font-size: 25px;" class="navbar-brand" href="#">Surya Simple Shop</a>
+        <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="navbar-brand" href="#">Surya se352 Simple Shop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -10,25 +10,26 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if not current_user.is_authenticated %}
-                <li style="font-style: oblique; font-size: 25px;" class="nav-item">
-                    <a style = "color: rgba(12, 37, 232, 0.881);" class="nav-link" href="{{url_for('auth.login')}}">Login</a>
+                <li class="nav-item">
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('auth.login')}}">Login</a>
                 </li>
-                <li style= "font-style: oblique; font-size: 25px;" class="nav-item">
-                    <a style = "color: rgba(12, 37, 232, 0.881);" class="nav-link" href="{{url_for('auth.register')}}">Register</a>
+                <li class="nav-item">
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('auth.register')}}">Register</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth.landing_page')}}">Home</a>
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('auth.landing_page')}}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth.profile')}}">Profile</a>
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('shop.shop_list')}}">Shop</a>
                 </li>
-                <!-- samples nav -->
-                {% set samples = [
-                ("sample.add", "Add"),
-                ("sample.list", "List"),
-                ] %}
-                {{dropdown_nav("Samples", samples)}}
+                <li class="nav-item">
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('auth.profile')}}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('shop.cart')}}">My Cart</a>
+                </li>
+                
                 <!-- roles nav (requires admin )-->
                 {% if current_user.has_role("Admin") %}
                 {% set roles = [
@@ -38,8 +39,16 @@
                 ] %}
                 {{dropdown_nav("Roles", roles)}}
                 {% endif %}
+                <!-- items nav (requires admin )-->
+                {% if current_user.has_role("Admin") %}
+                {% set roles = [
+                ("shop.item", "Add"),
+                ("shop.items", "List")
+                ] %}
+                {{dropdown_nav("Products", roles)}}
+                {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
+                    <a style=" text-shadow: rgb(29, 205, 35) 1px 0 10px;" class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
                 </li>
                 {% endif %}
 
