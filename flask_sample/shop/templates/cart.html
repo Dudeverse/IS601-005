@@ -23,14 +23,17 @@
                     <form method="POST">
                         <div class="row">
                             <input type="hidden" name="product_id" value="{{row['product_id']}}" />
+
                             <div class="col">
                                 <input type="number" class="form-control" name="quantity"
                                     value="{{row['quantity']}}" />
                             </div>
+
                             <div class="col d-grid">
                                 <input type="submit" value="Update"
                                     class="btn btn-secondary btn-sm" />
                             </div>
+                            
                         </div>
                     </form>
                 </td>
@@ -43,14 +46,29 @@
                         <input type="submit" value="x" class="btn btn-danger btn-sm" />
                     </form>
                 </td>
+                <td>
+                    <form action="{{url_for('shop.item_details')}}?id={{row['product_id']}}" method="POST">
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="View" class="btn btn-light" />
+                        </div>
+                    </form>
+                </td>
                 {# https://stackoverflow.com/a/51880609 #}
                 {% set ns.total = ns.total + row['subtotal'] %}
             </tr>
             {% endfor %}
             <tr>
+                <td>
+                    <form action="{{url_for('shop.cart_empty')}}" method="POST">
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="Empty Cart" class="btn btn-light" />
+                        </div>
+                    </form>
+                </td>
                 <td class="text-end" colspan="100%">
                     Total: {{ns.total or 0}}
                 </td>
+                
             </tr>
         </tbody>
     </table>

@@ -203,3 +203,18 @@ def cart():
         print("Error getting cart", e)
         flash("Error fetching cart", "danger")
     return render_template("cart.html", rows=rows)
+
+
+@shop.route("/cart_empty", methods=["GET","POST"])
+@login_required
+def cart_empty():
+    user_id = current_user.get_id()
+    if user_id:
+        try:
+            result = DB.delete("DELETE FROM IS601_S_Cart where user_id = %s", user_id)
+            if result.status:
+                    flash("Emptied your cart", "success")
+        except Exception as e:
+            print("Error deleting cart", e)
+            flash("Error deleting cart", "danger")
+    return redirect(url_for("shop.cart"))
