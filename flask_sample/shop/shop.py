@@ -132,7 +132,7 @@ def shop_list():
 
 
 
-
+#se352 18 dec 20222
 @shop.route("/cart", methods=["GET","POST"])
 @login_required
 def cart():
@@ -205,6 +205,8 @@ def cart():
     return render_template("cart.html", rows=rows)
 
 
+
+#se352 18 dec 20222
 @shop.route("/cart_empty", methods=["GET","POST"])
 @login_required
 def cart_empty():
