@@ -80,6 +80,13 @@
                             <input type="submit" value="+Add" class="btn btn-light" />
                         </div>
                     </form>
+                    {% if current_user.has_role("Admin") %}
+                    <form action="{{url_for('shop.item')}}?id={{row['id']}}" method="POST">
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="Edit" class="btn btn-light" />
+                        </div>
+                    </form>
+                    {% endif %}
 
                 </div>
             </div>
