@@ -70,7 +70,7 @@ def items():
         flash("There was a problem loading items", "danger")
     return render_template("items.html", rows=rows)
 
-@shop.route("/shop", methods=["GET","POST"])
+@shop.route("/shop", methods=["GET","POST"]) #se352 dec 17 8:42 pm 2022
 @login_required
 def shop_list():
     rows = []
@@ -82,7 +82,6 @@ def shop_list():
     column = request.args.get("column")
     order = request.args.get("order")
     limit = request.args.get("limit", 10)
-
 
     if name:
         query += " AND name like %s"
