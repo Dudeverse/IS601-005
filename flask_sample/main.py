@@ -7,13 +7,14 @@ load_dotenv()
 import flask_login
 from flask_login import current_user
 from flask_principal import identity_loaded, RoleNeed, UserNeed, Principal
+from flask_caching import Cache
 # added so modules can be found between the two different lookup states:
 # from tests and from regular running of the app
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 print(CURR_DIR)
 sys.path.append(CURR_DIR)
 
-# custom error pages # for ms1 commit
+# custom error pages
 def page_not_found(e):
     return render_template('404.html'), 404
 
@@ -28,18 +29,18 @@ def create_app(config_filename=''):
     app.register_error_handler(404, page_not_found)
     app.register_error_handler(403, permission_denied)
     app.secret_key = os.environ.get("SECRET_KEY", "missing_secret")
+    app.cache = Cache(app,config={'CACHE_TYPE': 'SimpleCache'})
     login_manager.init_app(app)
     # app.config.from_pyfile(config_filename)
     with app.app_context():
-        from views.hello import hello
-        app.register_blueprint(hello)
-        from views.sample import sample
-        app.register_blueprint(sample)
+        #from views.hello import hello
+        #app.register_blueprint(hello)
         from auth.auth import auth
         app.register_blueprint(auth)
         from roles.roles import roles
         app.register_blueprint(roles)
-
+        from shop.shop import shop
+        app.register_blueprint(shop)
         # load the extension
         principals = Principal(app) # must be defined/initialized for identity to work (flask_principal)
         @login_manager.user_loader
@@ -79,6 +80,12 @@ def create_app(config_filename=''):
             if hasattr(current_user, 'roles'):
                 for role in current_user.roles:
                     identity.provides.add(RoleNeed(role.name))
+        # DON'T DELETE, this cleans up the DB connection after each request
+        # this avoids sleeping queries
+        @app.teardown_request 
+        def after_request_cleanup(ctx):
+            from sql.db import DB
+            DB.close()
         return app
 
 
