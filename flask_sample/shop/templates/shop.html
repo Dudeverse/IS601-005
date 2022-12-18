@@ -4,7 +4,7 @@
 <!-- content -->
 {% block content %}
 <div class="container-fluid">
-    <div class="h1">Shop</div>
+    <div style=" text-shadow:deeppink 1px 0 5px;" class="h1">Shop</div>
     <form class="row row-cols-lg-auto g-3 align-items-center">
         <form method="GET">
             
@@ -71,7 +71,7 @@
                 </div>
                 <div class="card-footer">
                     <div class="card-text lead">
-                        unit_price: {{row["unit_price"]}}
+                        Price(USD): {{row["unit_price"]}}
                     </div>
                     <form action="{{url_for('shop.cart')}}" method="POST">
                         <input type="hidden" name="id" value="{{row['id']}}" />
