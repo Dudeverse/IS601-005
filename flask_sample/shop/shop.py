@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash, render_template, redirect, url_for
+from flask import Blueprint, request, flash, render_template, redirect, url_for, request
 from werkzeug.datastructures import MultiDict
 from shop.forms import ItemForm
 from sql.db import DB
@@ -74,14 +74,47 @@ def items():
 @login_required
 def shop_list():
     rows = []
+    query = "SELECT id, name, description, category, stock, unit_price, image, visibility FROM IS601_S_Products WHERE stock > 0 AND visibility = TRUE AND 1=1"
+    args = []
+    allowed_columns = ["category","unit_price"]
+    field_columns = zip(allowed_columns, allowed_columns)
+    name = request.args.get("name")
+    column = request.args.get("column")
+    order = request.args.get("order")
+    limit = request.args.get("limit", 10)
+
+
+    if name:
+        query += " AND name like %s"
+        args.append(f"%{name}%")
+
+    if column and order:
+        
+        if column in allowed_columns \
+            and order in ["asc", "desc"]:
+            query += f" ORDER BY {column} {order}"
+
     try:
-        result = DB.selectAll("SELECT id, name, description, category, stock, unit_price, image, visibility FROM IS601_S_Products WHERE stock > 0 AND visibility = TRUE LIMIT 25",)
+        if limit and int(limit) > 0 and int(limit) <= 100:
+            query += " LIMIT %s"
+            args.append(int(limit))
+        elif int(limit) >100 or int(limit)<0:
+            pass
+            flash("limit out of bounds", "danger")
+
+    except ValueError:
+        flash("enter a valid value", "warning")
+
+
+
+    try:
+        result = DB.selectAll(query, *args)
         if result.status and result.rows:
             rows = result.rows
     except Exception as e:
         print("Error fetching items", e)
         flash("There was a problem loading items", "danger")
-    return render_template("shop.html", rows=rows)
+    return render_template("shop.html", rows=rows, allowed_columns=field_columns)
 
 @shop.route("/cart", methods=["GET","POST"])
 def cart():

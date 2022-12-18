@@ -4,7 +4,50 @@
 <!-- content -->
 {% block content %}
 <div class="container-fluid">
-    <div class="h4">Shop</div>
+    <div class="h1">Shop</div>
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <form method="GET">
+            
+            <div class="col-12">
+                <label class="form-label" for="name">Product name</label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="enter Product name"
+                    value="{{request.args.get('name') or ''}}">
+            </div>
+
+            <div>&nbsp;</div>
+            
+            {% with cols = allowed_columns %}
+            {% include "sort_filter.html" %}
+            {% endwith %}
+            
+            <div>&nbsp;</div>
+
+            <div class="col-12">
+                <label class="form-label" for="limit">Limit</label>
+                <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                    value="{{request.args.get('limit') or '10'}}" />
+            </div>
+
+            
+
+            <div class="col-12">
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <input type="submit" class="btn btn-primary" value="Filter" />
+            </div>
+            <div class="col-12">
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <a href="?" class="btn btn-secondary">Reset</a>
+            </div>
+            
+        </form>
+        <div>&nbsp;</div>
+    </form>
+    
+
+
+
     <div class="row">
         {% for row in rows %}
         <div class="col">
