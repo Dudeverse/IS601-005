@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}{{type}} Item details{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<div class="container-fluid">
+    <div class="h3">{{type}} Item details</div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{render_field(form.name)}}
+        {{render_field(form.description)}}
+        {{render_field(form.category)}}
+        {{render_field(form.stock)}}
+        {{render_field(form.unit_price)}}
+        {{render_field(form.image)}}
+        {% if current_user.has_role("Admin") %}
+            {{render_field(form.visibility)}}
+        {% endif %}
+        
+    </form>
+</div>
+{% if current_user.has_role("Admin") %}
+    <form action="{{url_for('shop.item')}}?id=" method="post">
+        <div class="d-grid mt-1">
+            <input type="submit" value="Edit" class="btn btn-light" />
+        </div>
+    </form>
+{% endif %}
+
+{% endblock %}

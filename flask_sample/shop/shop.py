@@ -6,6 +6,23 @@ from roles.permissions import admin_permission
 from flask_login import login_required, current_user
 shop = Blueprint('shop', __name__, url_prefix='/',template_folder='templates')
 
+@shop.route("/item_details", methods=["GET","POST"])
+@login_required
+def item_details():
+    form = ItemForm()
+    id = request.args.get("id", form.id.data or None)
+    if id:
+        try:
+            result = DB.selectOne("SELECT id, name, description, category, stock, unit_price, image, visibility FROM IS601_S_Products WHERE id = %s", id)
+            if result.status and result.row:
+                    form.process(MultiDict(result.row))
+        except Exception as e:
+            print("Error fetching item", e)
+            flash("Item not found", "danger")
+    return render_template("prod_details.html", form=form)
+
+
+
 @shop.route("/admin/item", methods=["GET","POST"])
 @admin_permission.require(http_exception=403)
 def item():
@@ -103,8 +120,6 @@ def shop_list():
 
     except ValueError:
         flash("enter a valid value", "warning")
-
-
 
     try:
         result = DB.selectAll(query, *args)
