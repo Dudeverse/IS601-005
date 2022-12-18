@@ -22,7 +22,7 @@
                 <td style="width:10em">
                     <form method="POST">
                         <div class="row">
-                            <input type="hidden" name="item_id" value="{{row['item_id']}}" />
+                            <input type="hidden" name="product_id" value="{{row['product_id']}}" />
                             <div class="col">
                                 <input type="number" class="form-control" name="quantity"
                                     value="{{row['quantity']}}" />
@@ -38,7 +38,7 @@
                 <td>
                     <!-- lazy delete using quantity < 0 logic -->
                     <form method="POST">
-                        <input type="hidden" name="item_id" value="{{row['item_id']}}" />
+                        <input type="hidden" name="product_id" value="{{row['product_id']}}" />
                         <input type="hidden" name="quantity" value="-1" />
                         <input type="submit" value="x" class="btn btn-danger btn-sm" />
                     </form>

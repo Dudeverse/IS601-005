@@ -149,7 +149,6 @@ def cart():
                 if result.status and result.row:
                     unit_price = result.row["unit_price"]
                     name = result.row["name"]
-                    print("product id", product_id)
                     if product_id: # update from cart
                         result = DB.insertOne("""
                         UPDATE IS601_S_Cart SET
