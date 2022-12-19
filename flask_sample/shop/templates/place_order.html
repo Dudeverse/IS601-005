@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}{{type}} Place order{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<div class="container-fluid">
+    <div style=" text-shadow:deeppink 1px 0 5px;" class="h3">{{type}} Place order</div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{render_field(form.first_name)}}
+        {{render_field(form.last_name)}}
+        {{render_field(form.payment_method)}}
+        {{render_field(form.money_received)}}
+        {{render_field(form.address)}}
+        {{form.submit(class="btn btn-primary")}}
+        <div colspan="100%">
+            {# Note: Shop people need an order form page prior to doing the checkout process,
+            my example skips that since I don't record address/payment details #}
+            <a href="{{url_for('shop.purchase')}}" class="btn btn-primary">Place order</a>
+            </div>
+    </form>
+</div>
+{% endblock %}

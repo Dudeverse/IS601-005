@@ -1,7 +1,7 @@
 import traceback
 from flask import Blueprint, request, flash, render_template, redirect, url_for, request
 from werkzeug.datastructures import MultiDict
-from shop.forms import ItemForm
+from shop.forms import ItemForm, CheckoutForm
 from sql.db import DB
 from roles.permissions import admin_permission
 from flask_login import login_required, current_user
@@ -177,6 +177,7 @@ def cart():
                             "unit_price":unit_price,
                             "user_id":user_id
                         })
+                        
                         if result.status:
                             flash(f"Added {quantity} of {name} to cart", "success")
             except Exception as e:
@@ -225,45 +226,49 @@ def cart_empty():
 @shop.route("/purchase", methods=["GET","POST"])
 @login_required
 def purchase():
-    print("in the function")
     cart = []
     total = 0
     quantity = 0
     order = {}
     try:
-        DB.getDB().autocommit = False # make a transaction
+        DB.getDB().autocommit = True # make a transaction
 
         # get cart to verify
         
-        result = DB.selectAll("""SELECT c.id, product_id, name, c.quantity, p.stock, c.unit_price as cart_price, p.unit_price as item_price, (c.quantity * c.unit_price) as subtotal 
-        FROM IS601_S_Cart c JOIN IS601_S_Products p on c.product_id = p.id
+        result = DB.selectAll("""SELECT c.id, product_id, name, c.quantity, i.stock, c.unit_price as cart_unit_price, i.unit_price as item_unit_price, (c.quantity * c.unit_price) as subtotal 
+        FROM IS601_S_Cart c JOIN IS601_S_Products i on c.product_id = i.id
         WHERE c.user_id = %s
         """, current_user.get_id())
-        print(current_user.get_id())
         if result.status and result.rows:
             cart = result.rows
-            print(type(cart))
-            print(result.rows)
-        # verify cart # se352 changed till here
+        # verify cart
         has_error = False
         for item in cart:
             if item["quantity"] > item["stock"]:
                 flash(f"Item {item['name']} doesn't have enough stock left", "warning")
                 has_error = True
-            if item["cart_price"] != item["item_price"]:
+            if item["cart_unit_price"] != item["item_unit_price"]:
                 flash(f"Item {item['name']}'s price has changed, please refresh cart", "warning")
                 has_error = True
             total += int(item["subtotal"] or 0)
             quantity += int(item["quantity"])
-        print(" 001 cart veriffied ")
+        # check can afford
+        #if not has_error:
+        #    balance = int(current_user.get_balance())
+        #    if total > balance:
+        #        flash("You can't afford to make this purchase", "danger")
+        #        has_error = True
         # create order data
         order_id = -1
+        print(order_id)
         if not has_error:
-            print("total is ",total)
-            print("quantity is ", quantity)
-            print("current user id is ", current_user.get_id())
-            result = DB.insertOne("""INSERT INTO IS601_S_Orders (total_price, number_of_items, user_id)
-            VALUES (%s, %s, %s)""", total, quantity, current_user.get_id())
+            result = DB.delete("DELETE FROM IS601_S_Orders WHERE first_name IS NULL AND user_id = %s", current_user.get_id())
+            print(order_id)
+            result = DB.update("UPDATE IS601_S_Orders SET total_price = %s, number_of_items = %s, user_id =%s ", total, quantity, current_user.get_id())
+            print(order_id)
+            result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+            print(result)
+            print(result.row)
             
             
             if not result.status:
@@ -271,24 +276,24 @@ def purchase():
                 DB.getDB().rollback()
                 has_error = True
             else:
-                order_id = int(DB.db.fetch_eof_status()["insert_id"])
-                print("order_id is", order_id)
-                order["order_id"] = order_id
+                order_id = result.row["m"]
+                print(type(order_id))
                 order["total"] = total
                 order["quantity"] = quantity
-            
-        # record order history # se352 changed till here
+                print("order id is", order_id)
+
+        # record order history
         if order_id > -1 and not has_error:
             # Note: Not really an insert 1, it'll copy data from Table B into Table A
+            print("code has cometh")
             result = DB.insertOne("""INSERT INTO IS601_S_OrderItems (quantity, unit_price, order_id, product_id, user_id)
             SELECT quantity, unit_price, %s, product_id, user_id FROM IS601_S_Cart c WHERE c.user_id = %s""",
             order_id, current_user.get_id())
-            print(result.status)
+            
             if not result.status:
                 flash("Error recording order history", "danger")
                 has_error = True
                 DB.getDB().rollback()
-            
         # update stock based on cart data
         if not has_error:
             result = DB.update("""
@@ -301,13 +306,12 @@ def purchase():
                 has_error = True
                 DB.getDB().rollback()
 
-            
-        # empty the cart
+        
+        #empty the cart
         if not has_error:
             result = DB.delete("DELETE FROM IS601_S_Cart WHERE user_id = %s", current_user.get_id())
         else:
             return redirect(url_for("shop.cart"))
-        
     except Exception as e:
         print("Transaction exception", e)
         flash("Something went wrong", "danger")
@@ -352,3 +356,19 @@ def order():
         print("Error getting order", e)
         flash("Error fetching order", "danger")
     return render_template("order.html", rows=rows, total=total)
+
+@shop.route("/place_order", methods=["GET","POST"])
+@login_required
+def place_order():
+    form = CheckoutForm()
+    user_id = current_user.get_id()
+    if user_id:
+        try:
+            print("code entered here")
+            result = DB.insertOne("""INSERT INTO IS601_S_Orders (first_name, last_name, payment_method, money_received, address, user_id) VALUES (%s, %s, %s, %s, %s,%s) """, form.first_name.data, form.last_name.data, form.payment_method.data, form.money_received.data, form.address.data, current_user.get_id())
+            if result.status and result.row:
+                    flash("Filled form", "success")
+        except Exception as e:
+            print("Error fetching page", e)
+            flash("page not found", "danger")
+    return render_template("place_order.html", form=form)
