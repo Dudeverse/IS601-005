@@ -12,11 +12,13 @@
         {{render_field(form.money_received)}}
         {{render_field(form.address)}}
         {{form.submit(class="btn btn-primary")}}
+        <div>&nbsp;</div>
         <div colspan="100%">
             {# Note: Shop people need an order form page prior to doing the checkout process,
             my example skips that since I don't record address/payment details #}
-            <a href="{{url_for('shop.purchase')}}" class="btn btn-primary">Place order</a>
+            <a href="{{url_for('shop.purchase')}}" class="btn btn-success">Buy now!</a>
             </div>
+            <div>&nbsp;</div>
     </form>
 </div>
 {% endblock %}
