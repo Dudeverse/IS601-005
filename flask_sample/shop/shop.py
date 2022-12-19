@@ -225,6 +225,7 @@ def cart_empty():
 @shop.route("/purchase", methods=["GET","POST"])
 @login_required
 def purchase():
+    print("in the function")
     cart = []
     total = 0
     quantity = 0
@@ -234,97 +235,79 @@ def purchase():
 
         # get cart to verify
         
-        result = DB.selectAll("""SELECT c.id, item_id, name, c.quantity, i.stock, c.cost as cart_cost, i.cost as item_cost, (c.quantity * c.cost) as subtotal 
-        FROM IS601_S_Cart c JOIN IS601_S_Items i on c.item_id = i.id
+        result = DB.selectAll("""SELECT c.id, product_id, name, c.quantity, p.stock, c.unit_price as cart_price, p.unit_price as item_price, (c.quantity * c.unit_price) as subtotal 
+        FROM IS601_S_Cart c JOIN IS601_S_Products p on c.product_id = p.id
         WHERE c.user_id = %s
         """, current_user.get_id())
+        print(current_user.get_id())
         if result.status and result.rows:
             cart = result.rows
-        # verify cart
+            print(type(cart))
+            print(result.rows)
+        # verify cart # se352 changed till here
         has_error = False
         for item in cart:
             if item["quantity"] > item["stock"]:
                 flash(f"Item {item['name']} doesn't have enough stock left", "warning")
                 has_error = True
-            if item["cart_cost"] != item["item_cost"]:
+            if item["cart_price"] != item["item_price"]:
                 flash(f"Item {item['name']}'s price has changed, please refresh cart", "warning")
                 has_error = True
             total += int(item["subtotal"] or 0)
             quantity += int(item["quantity"])
-        # check can afford
-        if not has_error:
-            balance = int(current_user.get_balance())
-            if total > balance:
-                flash("You can't afford to make this purchase", "danger")
-                has_error = True
+        print(" 001 cart veriffied ")
         # create order data
         order_id = -1
         if not has_error:
-            result = DB.insertOne("""INSERT INTO IS601_S_Orders (total_spent, number_of_items, user_id)
+            print("total is ",total)
+            print("quantity is ", quantity)
+            print("current user id is ", current_user.get_id())
+            result = DB.insertOne("""INSERT INTO IS601_S_Orders (total_price, number_of_items, user_id)
             VALUES (%s, %s, %s)""", total, quantity, current_user.get_id())
+            
+            
             if not result.status:
                 flash("Error generating order", "danger")
                 DB.getDB().rollback()
                 has_error = True
             else:
                 order_id = int(DB.db.fetch_eof_status()["insert_id"])
+                print("order_id is", order_id)
                 order["order_id"] = order_id
                 order["total"] = total
                 order["quantity"] = quantity
-        # record order history
+            
+        # record order history # se352 changed till here
         if order_id > -1 and not has_error:
             # Note: Not really an insert 1, it'll copy data from Table B into Table A
-            result = DB.insertOne("""INSERT INTO IS601_S_OrderItems (quantity, cost, order_id, item_id, user_id)
-            SELECT quantity, cost, %s, item_id, user_id FROM IS601_S_Cart c WHERE c.user_id = %s""",
+            result = DB.insertOne("""INSERT INTO IS601_S_OrderItems (quantity, unit_price, order_id, product_id, user_id)
+            SELECT quantity, unit_price, %s, product_id, user_id FROM IS601_S_Cart c WHERE c.user_id = %s""",
             order_id, current_user.get_id())
+            print(result.status)
             if not result.status:
                 flash("Error recording order history", "danger")
                 has_error = True
                 DB.getDB().rollback()
+            
         # update stock based on cart data
         if not has_error:
             result = DB.update("""
-            UPDATE IS601_S_Items 
-                set stock = stock - (select IFNULL(quantity, 0) FROM IS601_S_Cart WHERE item_id = IS601_S_Items.id and user_id = %(uid)s) 
-                WHERE id in (SELECT item_id from IS601_S_Cart where user_id = %(uid)s)
+            UPDATE IS601_S_Products 
+                set stock = stock - (select IFNULL(quantity, 0) FROM IS601_S_Cart WHERE product_id = IS601_S_Products.id and user_id = %(uid)s) 
+                WHERE id in (SELECT product_id from IS601_S_Cart where user_id = %(uid)s)
             """, {"uid":current_user.get_id()} )
             if not result.status:
                 flash("Error updating stock", "danger")
                 has_error = True
                 DB.getDB().rollback()
 
-        # apply purchase (specific to my project)
-        if not has_error:
-            # here I'm using a known item_id to update my player's stats
-            attrs = [("life", -1), ("speed", -2), ("fire_rate", -3), ("damage", -4), ("radius", -5)]
-            for attr, target_id in attrs:
-                try:
-                    query = f"""
-                    INSERT INTO IS601_S_Attributes (name, value, user_id)
-                    VALUES (%(attr)s,
-                    (SELECT IFNULL(SUM(quantity), 0) FROM IS601_S_OrderItems WHERE item_id = %(target_id)s and user_id = %(uid)s)
-                     , %(uid)s)
-                    ON DUPLICATE KEY UPDATE 
-                    value = (SELECT IFNULL(SUM(quantity), 0) FROM IS601_S_OrderItems WHERE item_id = %(target_id)s and user_id = %(uid)s)
-                    """
-                    print(f"{attr} query", query)
-                    result = DB.insertOne(query,
-                    {"uid": current_user.get_id(),
-                    "attr": attr,
-                    "target_id": int(target_id)})
-                except Exception as e:
-                    print(f"Error updating attribute {attr}", e)
+            
         # empty the cart
         if not has_error:
             result = DB.delete("DELETE FROM IS601_S_Cart WHERE user_id = %s", current_user.get_id())
-    
-        if not has_error:
-            details = f"Spent {total} on {quantity} upgrades" # TBD
-            current_user.account.remove_points(-total, reason="purchase", details=details)
-            DB.getDB().commit()
-            flash("Purchase successful!", "success")
         else:
             return redirect(url_for("shop.cart"))
+        
     except Exception as e:
         print("Transaction exception", e)
         flash("Something went wrong", "danger")
@@ -339,7 +322,7 @@ def orders():
     rows = []
     try:
         result = DB.selectAll("""
-        SELECT id, total_spent, number_of_items, created FROM IS601_S_Orders WHERE user_id = %s
+        SELECT id, total_price, number_of_items, created FROM IS601_S_Orders WHERE user_id = %s
         """, current_user.get_id())
         if result.status and result.rows:
             rows = result.rows
@@ -360,7 +343,7 @@ def order():
     try:
         # locking query to order_id and user_id so the user can see only their orders
         result = DB.selectAll("""
-        SELECT name, oi.cost, oi.quantity, (oi.cost*oi.quantity) as subtotal FROM IS601_S_OrderItems oi JOIN IS601_S_Items i on oi.item_id = i.id WHERE order_id = %s ANd user_id = %s
+        SELECT name, oi.unit_price, oi.quantity, (oi.unit_price*oi.quantity) as subtotal FROM IS601_S_OrderItems oi JOIN IS601_S_Products i on oi.product_id = i.id WHERE order_id = %s ANd user_id = %s
         """, id, current_user.get_id())
         if result.status and result.rows:
             rows = result.rows
