@@ -298,6 +298,9 @@ def purchase():
             order_id = result.row["m"]
             result = DB.update("UPDATE IS601_S_Orders SET total_price = %s, number_of_items = %s, user_id =%s WHERE id =%s", total, quantity, current_user.get_id(), order_id)
 
+
+            
+
             result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
             if not result.status:
                 flash("Error generating order", "danger")
@@ -308,6 +311,9 @@ def purchase():
                 order["order_id"] = order_id
                 order["total"] = total
                 order["quantity"] = quantity
+                result = DB.selectOne("SELECT money_received as p FROM IS601_S_Orders WHERE id = %s", order_id)
+                money_received = result.row["p"]
+                order["money_received"] = money_received
                 print("order id is", order_id)
         print("created order data")
         # record order history
