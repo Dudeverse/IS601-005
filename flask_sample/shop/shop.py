@@ -282,7 +282,7 @@ def purchase():
                 order_id = result.row["m"]
                 result = DB.delete("DELETE FROM IS601_S_Orders WHERE id = %s", order_id)
                 has_error = True
-            if result.row["p"]>total:
+            elif result.row["p"]>total:
                 flash("You have entered invalid amount, please enter the right amount in checkout form.", "danger")
                 result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
                 order_id = result.row["m"]
