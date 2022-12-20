@@ -397,6 +397,8 @@ def order():
         print("Error getting order", e)
         flash("Error fetching order", "danger")
     return render_template("order.html", rows=rows, total=total)
+
+
 # se352 dec19  2022
 @shop.route("/place_order", methods=["GET","POST"])
 @login_required
@@ -413,3 +415,18 @@ def place_order():
             print("Error fetching page", e)
             flash("page not found", "danger")
     return render_template("place_order.html", form=form)
+
+@shop.route("/admin/orders", methods=["GET"])
+@admin_permission.require(http_exception=403)
+def admin_orders():
+    rows = []
+    try:
+        result = DB.selectAll("""
+        SELECT id, total_price, number_of_items, created FROM IS601_S_Orders""")
+        if result.status and result.rows:
+            rows = result.rows
+            print(result.rows)
+    except Exception as e:
+        print("Error getting orders", e)
+        flash("Error fetching orders", "danger")
+    return render_template("admin_orders.html", rows=rows)
