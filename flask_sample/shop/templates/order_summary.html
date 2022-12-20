@@ -12,7 +12,7 @@
     <table class="table text-light bg-dark">
         <thead>
             <th>Order ID</th>
-            <th>Total Spent</th>
+            <th>Total Price</th>
             <th>Total Items</th>
         </thead>
         <tbody>
@@ -46,9 +46,30 @@
             {% endfor %}
             <tr>
                 <td class="text-end" colspan="100%">
-                    Total: {{ns.total or 0}}
+                    Grand Total: {{ns.total or 0}}
                 </td>
             </tr>
+            <tr>
+                <td class="text-end" colspan="100%">
+                    Money Received: {{order.money_received}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-end" colspan="100%">
+                    Balance: {{0}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start" colspan="100%">
+                    Payment method: {{order.payment_method}}
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start" colspan="100%">
+                    Shiiping Address: {{order.address}}
+                </td>
+            </tr>
+            
         </tbody>
     </table>
 </div>
