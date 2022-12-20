@@ -376,6 +376,8 @@ def orders():
         flash("Error fetching orders", "danger")
     return render_template("orders.html", rows=rows)
 
+# se352 dec19  2022
+
 @shop.route("/order", methods=["GET"])
 @login_required
 def order():
@@ -417,6 +419,7 @@ def place_order():
             flash("page not found", "danger")
     return render_template("place_order.html", form=form)
 
+# se352 dec19  2022
 @shop.route("/admin/orders", methods=["GET"])
 @admin_permission.require(http_exception=403)
 def admin_orders():
@@ -432,6 +435,7 @@ def admin_orders():
         flash("Error fetching orders", "danger")
     return render_template("admin_orders.html", rows=rows)
 
+# se352 dec19  2022
 @shop.route("/admin/order", methods=["GET"])
 @login_required
 def admin_order():
