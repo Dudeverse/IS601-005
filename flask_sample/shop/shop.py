@@ -376,6 +376,8 @@ def orders():
         flash("Error fetching orders", "danger")
     return render_template("orders.html", rows=rows)
 
+# se352 dec19  2022
+
 @shop.route("/order", methods=["GET"])
 @login_required
 def order():
@@ -408,7 +410,6 @@ def place_order():
     user_id = current_user.get_id()
     if user_id:
         try:
-            print("code entered here")
             result = DB.insertOne("""INSERT INTO IS601_S_Orders (first_name, last_name, payment_method, money_received, address, user_id) VALUES (%s, %s, %s, %s, %s,%s) """, form.first_name.data, form.last_name.data, form.payment_method.data, form.money_received.data, form.address.data, current_user.get_id())
             if result.status and result.row:
                     flash("Filled form", "success")
@@ -417,6 +418,7 @@ def place_order():
             flash("page not found", "danger")
     return render_template("place_order.html", form=form)
 
+# se352 dec19  2022
 @shop.route("/admin/orders", methods=["GET"])
 @admin_permission.require(http_exception=403)
 def admin_orders():
@@ -432,6 +434,7 @@ def admin_orders():
         flash("Error fetching orders", "danger")
     return render_template("admin_orders.html", rows=rows)
 
+# se352 dec19  2022
 @shop.route("/admin/order", methods=["GET"])
 @login_required
 def admin_order():
