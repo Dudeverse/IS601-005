@@ -250,9 +250,20 @@ def purchase():
                 result = DB.delete("DELETE FROM IS601_S_Orders WHERE total_price IS NULL AND user_id = %s", current_user.get_id())
                 has_error = True
             if item["cart_unit_price"] != item["item_unit_price"]:
-                flash(f"Item {item['name']}'s price has changed, please refresh cart. To refresh, click on update button.", "warning")
-                result = DB.delete("DELETE FROM IS601_S_Orders WHERE total_price IS NULL AND user_id = %s", current_user.get_id())
-                has_error = True
+                x = item["cart_unit_price"]
+                y = item["item_unit_price"]
+                if x < y:
+                    percent_increase = ((y-x)/x)*100
+                    hiked_price = x + ((percent_increase*x)/100)
+                    flash(f"Item {item['name']}'s price has gone up by {percent_increase}%. Hiked price is {hiked_price}. Please refresh cart. To refresh, click on update button.", "warning")
+                    result = DB.delete("DELETE FROM IS601_S_Orders WHERE total_price IS NULL AND user_id = %s", current_user.get_id())
+                    has_error = True
+                if x > y:
+                    percent_decrease = ((x-y)/x)*100
+                    discounted_price = x - ((percent_decrease*x)/100)
+                    flash(f"Item {item['name']}'s price has gone down by {percent_decrease}%. Discounted price is {discounted_price}! Please refresh cart. To refresh, click on update button.", "success")
+                    result = DB.delete("DELETE FROM IS601_S_Orders WHERE total_price IS NULL AND user_id = %s", current_user.get_id())
+                    has_error = True
             total += int(item["subtotal"] or 0)
             quantity += int(item["quantity"])
 
@@ -271,6 +282,12 @@ def purchase():
                 order_id = result.row["m"]
                 result = DB.delete("DELETE FROM IS601_S_Orders WHERE id = %s", order_id)
                 has_error = True
+            if result.row["p"]>total:
+                flash("You have entered invalid amount, please enter the right amount in checkout form.", "danger")
+                result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+                order_id = result.row["m"]
+                result = DB.delete("DELETE FROM IS601_S_Orders WHERE id = %s", order_id)
+                has_error = True
         print("affordability check passed")
         # create order data
         
@@ -279,9 +296,7 @@ def purchase():
             result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
             order_id = result.row["m"]
             result = DB.update("UPDATE IS601_S_Orders SET total_price = %s, number_of_items = %s, user_id =%s WHERE id =%s", total, quantity, current_user.get_id(), order_id)
-            
-            
-            
+
             result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
             if not result.status:
                 flash("Error generating order", "danger")
