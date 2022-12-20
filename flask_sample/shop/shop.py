@@ -245,18 +245,25 @@ def purchase():
         has_error = False
         for item in cart:
             if item["quantity"] > item["stock"]:
-                flash(f"Item {item['name']} doesn't have enough stock left", "warning")
+                flash(f"Sorry! Item {item['name']} doesn't have enough stock left", "warning")
+                flash(f"Remaining stock quantity for {item['name']} is {item['stock']}. Feel free to update your cart!", "success")
+                result = DB.delete("DELETE FROM IS601_S_Orders WHERE total_price IS NULL AND user_id = %s", current_user.get_id())
                 has_error = True
             if item["cart_unit_price"] != item["item_unit_price"]:
-                flash(f"Item {item['name']}'s price has changed, please refresh cart", "warning")
+                flash(f"Item {item['name']}'s price has changed, please refresh cart. To refresh, click on update button.", "warning")
+                result = DB.delete("DELETE FROM IS601_S_Orders WHERE total_price IS NULL AND user_id = %s", current_user.get_id())
                 has_error = True
             total += int(item["subtotal"] or 0)
             quantity += int(item["quantity"])
+
+        print("quantity check passed")
         # check can afford
         if not has_error:
+            result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+            order_id = result.row["m"]
             result = DB.delete("DELETE FROM IS601_S_Orders WHERE first_name IS NULL AND user_id = %s", current_user.get_id())
 
-            result = DB.selectOne("SELECT money_received as p FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+            result = DB.selectOne("SELECT money_received as p FROM IS601_S_Orders WHERE id = %s", order_id)
             
             if result.row["p"]<total:
                 flash("You can't afford to make this purchase", "danger")
@@ -264,26 +271,32 @@ def purchase():
                 order_id = result.row["m"]
                 result = DB.delete("DELETE FROM IS601_S_Orders WHERE id = %s", order_id)
                 has_error = True
+        print("affordability check passed")
         # create order data
-        order_id = -1
+        
         
         if not has_error:
-            result = DB.update("UPDATE IS601_S_Orders SET total_price = %s, number_of_items = %s, user_id =%s ", total, quantity, current_user.get_id())
+            result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+            order_id = result.row["m"]
+            result = DB.update("UPDATE IS601_S_Orders SET total_price = %s, number_of_items = %s, user_id =%s WHERE id =%s", total, quantity, current_user.get_id(), order_id)
+            
+            
             
             result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
-            
-            
             if not result.status:
                 flash("Error generating order", "danger")
                 DB.getDB().rollback()
                 has_error = True
             else:
                 order_id = result.row["m"]
+                order["order_id"] = order_id
                 order["total"] = total
                 order["quantity"] = quantity
                 print("order id is", order_id)
-
+        print("created order data")
         # record order history
+        result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+        order_id = result.row["m"]
         if order_id > -1 and not has_error:
             # Note: Not really an insert 1, it'll copy data from Table B into Table A
             print("code has cometh")
@@ -312,7 +325,6 @@ def purchase():
         if not has_error:
             result = DB.delete("DELETE FROM IS601_S_Cart WHERE user_id = %s", current_user.get_id())
         else:
-            result = DB.delete("DELETE FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
             return redirect(url_for("shop.cart"))
     except Exception as e:
         print("Transaction exception", e)
