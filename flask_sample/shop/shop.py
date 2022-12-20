@@ -241,7 +241,7 @@ def purchase():
         """, current_user.get_id())
         if result.status and result.rows:
             cart = result.rows
-        # verify cart
+        # verify cart # se352 dec19  2022
         has_error = False
         for item in cart:
             if item["quantity"] > item["stock"]:
@@ -268,7 +268,7 @@ def purchase():
             quantity += int(item["quantity"])
 
         print("quantity check passed")
-        # check can afford
+        # check can afford # se352 dec19  2022
         if not has_error:
             result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
             order_id = result.row["m"]
@@ -291,6 +291,7 @@ def purchase():
         print("affordability check passed")
         # create order data
         
+        # se352 dec19  2022
         
         if not has_error:
             result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
@@ -385,7 +386,7 @@ def order():
         print("Error getting order", e)
         flash("Error fetching order", "danger")
     return render_template("order.html", rows=rows, total=total)
-
+# se352 dec19  2022
 @shop.route("/place_order", methods=["GET","POST"])
 @login_required
 def place_order():
