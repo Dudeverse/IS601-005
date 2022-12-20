@@ -5,5 +5,5 @@
 {% block content %}
 {% from "_table_helper.html" import render_table %}
 {{render_table("Order", rows, ["user_id"])}}
-<div class="text-light lead ms-3">Total Cost: {{total}}</div>
+<div class="text-dark lead ms-3">Total Cost: {{total}}</div>
 {% endblock %}
