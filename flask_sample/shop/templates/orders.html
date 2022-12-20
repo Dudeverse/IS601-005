@@ -5,5 +5,5 @@
 {% block content %}
 {% from "_table_helper.html" import render_table %}
 {% set view = "shop.order" %}
-{{render_table("Orders", rows, ["user_id"], view)}}
+{{render_table("My Orders", rows, ["user_id"], view)}}
 {% endblock %}

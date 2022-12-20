@@ -4,6 +4,6 @@
 <!-- content -->
 {% block content %}
 {% from "_table_helper.html" import render_table %}
-{% set view = "shop.order" %}
-{{render_table("Orders", rows, view)}}
+{% set view = "shop.admin_order" %}
+{{render_table("All Orders", rows, ["user_id"], view)}}
 {% endblock %}

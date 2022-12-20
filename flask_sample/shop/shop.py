@@ -393,6 +393,7 @@ def order():
         if result.status and result.rows:
             rows = result.rows
             total = sum(int(row["subtotal"]) for row in rows)
+            print(total)
     except Exception as e:
         print("Error getting order", e)
         flash("Error fetching order", "danger")
@@ -422,7 +423,7 @@ def admin_orders():
     rows = []
     try:
         result = DB.selectAll("""
-        SELECT id, total_price, number_of_items, created FROM IS601_S_Orders""")
+        SELECT o.id, o.total_price, o.number_of_items, o.created, u.username FROM IS601_S_Orders as o JOIN IS601_Users as u ON o.user_id=u.id""")
         if result.status and result.rows:
             rows = result.rows
             print(result.rows)
@@ -430,3 +431,24 @@ def admin_orders():
         print("Error getting orders", e)
         flash("Error fetching orders", "danger")
     return render_template("admin_orders.html", rows=rows)
+
+@shop.route("/admin/order", methods=["GET"])
+@login_required
+def admin_order():
+    rows = []
+    total = 0
+    id = request.args.get("id")
+    if not id:
+        flash("Invalid order", "danger")
+        return redirect(url_for("shop.admin_orders"))
+    try:
+        # locking query to order_id and user_id so the user can see only their orders
+        result = DB.selectAll("""
+        SELECT name, oi.unit_price, oi.quantity, (oi.unit_price*oi.quantity) as subtotal FROM IS601_S_OrderItems oi JOIN IS601_S_Products i on oi.product_id = i.id WHERE order_id = %s AND oi.user_id > -1""", id)
+        if result.status and result.rows:
+            rows = result.rows
+            total = sum(int(row["subtotal"]) for row in rows)
+    except Exception as e:
+        print("Error getting order", e)
+        flash("Error fetching order", "danger")
+    return render_template("admin_order.html", rows=rows, total=total)
