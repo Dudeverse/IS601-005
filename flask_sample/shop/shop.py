@@ -410,7 +410,6 @@ def place_order():
     user_id = current_user.get_id()
     if user_id:
         try:
-            print("code entered here")
             result = DB.insertOne("""INSERT INTO IS601_S_Orders (first_name, last_name, payment_method, money_received, address, user_id) VALUES (%s, %s, %s, %s, %s,%s) """, form.first_name.data, form.last_name.data, form.payment_method.data, form.money_received.data, form.address.data, current_user.get_id())
             if result.status and result.row:
                     flash("Filled form", "success")
