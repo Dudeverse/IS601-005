@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block title %}Shop{% endblock %}
+
+<!-- content -->
+{% block content %}
+<div class="container-fluid">
+    <div style=" text-shadow:deeppink 1px 0 5px;" class="h1">Shop</div>
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <form method="GET">
+            
+            <div class="col-12">
+                <label class="form-label" for="name">Product name</label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="enter Product name"
+                    value="{{request.args.get('name') or ''}}">
+            </div>
+
+            <div>&nbsp;</div>
+            
+            {% with cols = allowed_columns %}
+            {% include "sort_filter.html" %}
+            {% endwith %}
+            
+            <div>&nbsp;</div>
+
+            <div class="col-12">
+                <label class="form-label" for="limit">Limit</label>
+                <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                    value="{{request.args.get('limit') or '10'}}" />
+            </div>
+
+            
+
+            <div class="col-12">
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <input type="submit" class="btn btn-primary" value="Filter" />
+            </div>
+            <div class="col-12">
+                <div>&nbsp;</div>
+                <div>&nbsp;</div>
+                <a href="?" class="btn btn-secondary">Reset</a>
+            </div>
+            
+        </form>
+        <div>&nbsp;</div>
+    </form>
+    
+
+
+
+    <div class="row">
+        {% for row in rows %}
+        <div class="col">
+            <div class="card text-light bg-dark border" style="width: 20em">
+                <div class="card-header">
+                    Stock: {{row["stock"]}}
+                </div>
+                <div class="card-body">
+                    <div style="font-size:25px ;" class="card-title">
+                        {{row["name"]}}
+                    </div>
+                    {% if row["image"] %}
+                    <img src="{{row['image']}}" style="aspect-ratio: 1; width:100%">
+                    {% endif %}
+                    <div style="color:deeppink" class="card-text lead">
+                        {{row["category"]}}
+                    </div>
+                    <div style="font-size:17px ;" class="card-text lead">
+                        {{row["description"]}}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="card-text lead">
+                        Price(USD): {{row["unit_price"]}}
+                    </div>
+                    <form action="{{url_for('shop.cart')}}" method="POST">
+                        <input type="hidden" name="id" value="{{row['id']}}" />
+                        <input type="number" class="form-control" name="quantity" value="1" />
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="+Add" class="btn btn-light" />
+                        </div>
+                    </form>
+                    <form action="{{url_for('shop.item_details')}}?id={{row['id']}}" method="POST">
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="View" class="btn btn-light" />
+                        </div>
+                    </form>
+                    {% if current_user.has_role("Admin") %}
+                    <form action="{{url_for('shop.item')}}?id={{row['id']}}" method="POST">
+                        <div class="d-grid mt-1">
+                            <input type="submit" value="Edit" class="btn btn-light" />
+                        </div>
+                    </form>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

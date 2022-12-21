@@ -2,10 +2,10 @@
 {% block title %}List Roles{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <div class="h1">List Roles</div>
+    <div style=" text-shadow:deeppink 1px 0 5px;" class="h1">List Roles</div>
     <table class="table">
         {% if rows and rows|length > 0 %}
-        <thead>
+        <thead class = "table-dark">
             <tr class="text-capitalize">
                 {% for r in rows[0] %}
                 <th>{{r}}</th>
@@ -13,7 +13,7 @@
             </tr>
         </thead>
         {% for r in rows %}
-        <tr>
+        <tr class = "table-primary">
             {% for v in r.values() %}
             <td>{{v}}</td>
             {% endfor %}

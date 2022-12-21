@@ -3,9 +3,10 @@
 {% block content %}
 {% from "_formhelpers.html" import render_field %}
 <div class="container-fluid">
-    <div class="h3">Register</div>
+    <div style=" text-shadow:deeppink 1px 0 5px;" class="h3">Register</div>
     <form method="POST">
         {{ form.hidden_tag() }}
+        {{render_field(form.username)}}
         {{render_field(form.email)}}
         {{render_field(form.password)}}
         {{render_field(form.confirm)}}
@@ -13,3 +14,4 @@
     </form>
 </div>
 {% endblock %}
+
