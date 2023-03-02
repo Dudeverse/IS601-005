@@ -1,10 +1,10 @@
 import random
 import time
 
-
 #tune n to higher numbers to see how the running time changes
 
-n = 100 # number of elements
+
+n = 1000 # number of elements
 num_permutations = 1000 # number of permutations to generate
 
 # generate num_permutations random permutations
@@ -18,7 +18,9 @@ for i in range(num_permutations):
 for i in range(2):
     print(permutations[i])
 
-
+print(len(permutations))
+print(type(permutations[0]))
+print(type(permutations[0][0]))
 
 
 # Python program for implementation of Cocktail Sort
@@ -38,7 +40,7 @@ def cocktailSort(a):
 		# loop from left to right same as the bubble
 		# sort
 		for i in range (start, end):
-			if (a[i] > a[i+1]) :
+			if (a[i] < a[i+1]) :
 				a[i], a[i+1]= a[i+1], a[i]
 				swapped=True
 
@@ -57,10 +59,9 @@ def cocktailSort(a):
 		# from right to left, doing the same
 		# comparison as in the previous stage
 		for i in range(end-1, start-1,-1):
-			if (a[i] > a[i+1]):
+			if (a[i] < a[i+1]):
 				a[i], a[i+1] = a[i+1], a[i]
 				swapped = True
-
 
 		# increase the starting point, because
 		# the last stage would have moved the next
@@ -73,12 +74,17 @@ start = time.time()
 
 count = 1
 for each_perm in permutations:
-    #print(each_perm)
+    #start = time.time()
     print("---------count:", count)
+    print(each_perm)
     cocktailSort(each_perm)
+    print("Sorted array is:", each_perm)
     count = count + 1
-    #print("Sorted array is:", each_perm)
-    
+    each_perm.sort()
+    print(each_perm)
+    #end = time.time()
+    #run_time = end - start
+    #print(f"Running time in milliseconds: {run_time*1000} ms" )
     
     
 end = time.time()
