@@ -1,7 +1,7 @@
 import random
 import time
 
-
+#tune n to higher numbers to see how the running time changes
 
 
 n = 100 # number of elements
