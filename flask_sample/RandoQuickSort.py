@@ -4,7 +4,7 @@ import time
 
 
 
-n = 100000 # number of elements
+n = 100# number of elements
 num_permutations = 1000 # number of permutations to generate
 
 # generate num_permutations random permutations
