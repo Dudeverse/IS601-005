@@ -7,7 +7,7 @@ print(sys.getrecursionlimit())
 
 #tune n to higher numbers to see how the running time changes
 
-n = 10000 # number of elements
+n = 100000 # number of elements
 num_permutations = 1000 # number of permutations to generate
 
 # generate num_permutations random permutations
