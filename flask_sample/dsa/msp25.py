@@ -7,8 +7,8 @@ print(sys.getrecursionlimit())
 
 #tune n to higher numbers to see how the running time changes
 
-n = 10 # number of elements
-num_permutations = 10 # number of permutations to generate
+n = 100000 # number of elements
+num_permutations = 1000 # number of permutations to generate
 
 # generate num_permutations random permutations
 permutations = []
@@ -69,10 +69,7 @@ def merge(left, right):
     result += right[j:]
     return result
 
-# Test the code with the input array [2, 9, 0, 1, 4, 7, 8, 5]
-arr = [2, 9, 0, 1, 4, 7, 8, 5]
-sorted_arr = merge_sort_k_2_5(arr)
-print(sorted_arr)
+
 
 start = time.time()
 
