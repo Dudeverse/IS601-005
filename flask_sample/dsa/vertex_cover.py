@@ -9,10 +9,10 @@ n_values = [100, 120, 140, 160, 180, 200]
 q_values = [0.1, 0.2, 0.3, 0.4, 0.5]
 
 # Set the number of random graphs to generate
-M = 1
+M = 2
 
 def greedy_vc(G):
-    print("I'm running2 too!")
+    print("I'm running!")
     """Solves the vertex cover problem using a greedy approach."""
     vc2 = set()  # start with an empty vertex cover
     # Sort the vertices by their degree in non-increasing order
@@ -26,6 +26,7 @@ def greedy_vc(G):
 
 
 def pricing_vc(G):
+    print("I'm running too!")
     # Initialize the vertex cover to an empty set
     cover = set()
     
@@ -77,6 +78,10 @@ for n in n_values:
             vertex_costs = np.random.uniform(size=n)
             nx.set_node_attributes(G, values=dict(zip(range(n), vertex_costs)), name='cost')
             
+
+
+            print("GREEDY ALGO RESULTS")
+
             # Solve the vertex cover problem using the greedy approach and the Integer Programming approach
             vc_greedy = greedy_vc(G)
             
@@ -96,5 +101,7 @@ for n in n_values:
             
             # Do whatever you want with the generated graph G and its vertex cover
             # For example, you can compute the size and cost of the vertex cover and print them
-            print(f"Graph with n={n}, q={q}, and vertex costs: {G.nodes.data('cost')} has a vertex cover of size {len(cover)} and total cost {total_cost:.2f}")
+            print(f"Graph with n={n}, q={q} and total cost {total_cost:.2f}")
+            print("*************************************************************")
+
 
