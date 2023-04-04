@@ -6,7 +6,7 @@ from collections import defaultdict
 
 # Define the possible values of n and q
 n_values = [100, 120, 140, 160, 180, 200]
-q_values = [0.5]#0.1, 0.2, 0.3, 0.4, 0.5]
+q_values = [0.1]#0.1, 0.2, 0.3, 0.4, 0.5]
 
 # Set the number of random graphs to generate
 M = 1
