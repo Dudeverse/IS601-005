@@ -6,7 +6,7 @@ from collections import defaultdict
 
 # Define the possible values of n and q
 n_values = [100, 120, 140, 160, 180, 200]
-q_values = [0.1]#0.1, 0.2, 0.3, 0.4, 0.5]
+p_values = [ 0.1, 0.2, 0.3, 0.4, 0.5]
 
 # Set the number of random graphs to generate
 M = 1
@@ -65,13 +65,16 @@ def pricing_vc(G):
 
 
 Count = 0
-All_total_costs = []
+All_total_costs_pricing = []
+All_total_costs_greedy = []
+n_list = []
+p_list = []
 for n in n_values:
-    for q in q_values:
+    for p in p_values:
         for i in range(M):
             Count = Count + 1
             # Create a random graph with n nodes and edge probability q
-            G = nx.erdos_renyi_graph(n, q)
+            G = nx.erdos_renyi_graph(n, p)
             
             # Assign a random cost to each vertex, uniformly sampled from [0, 1]
             vertex_costs = np.random.uniform(size=n)
@@ -86,7 +89,8 @@ for n in n_values:
             
             # Compute the total cost of the vertex cover and print it
             total_cost_greedy = sum(vertex_costs[v] for v in vc_greedy)
-            print(f"GREEDY: n={n}, q={q} total cost {total_cost_greedy:.2f}")
+            All_total_costs_greedy.append(total_cost_greedy)
+            print(f"GREEDY: n={n}, p={p} total cost {total_cost_greedy:.3f}")
             #print()
 
 
@@ -97,10 +101,24 @@ for n in n_values:
             
             # Calculate the total cost of the vertex cover
             total_cost = sum([G.nodes[v]['cost'] for v in cover])
-            
+            All_total_costs_pricing.append(total_cost)
+            n_list.append(n)
+            p_list.append(p)
             # Do whatever you want with the generated graph G and its vertex cover
             # For example, you can compute the size and cost of the vertex cover and print them
-            print(f"PRICING:n={n}, q={q} total cost {total_cost:.2f}")
+            print(f"PRICING:n={n}, p={p} total cost {total_cost:.3f}")
             print("*************************************************************")
 
+print("*********************GREEDY START**********************************")
+zipped = zip(n_list,p_list ,All_total_costs_greedy)
 
+
+print(*zipped, sep ='\n')
+print("*************************************************************")
+print("*********************PRICING START**********************************")
+
+zipped = zip(n_list,p_list ,All_total_costs_pricing)
+
+
+print(*zipped, sep ='\n')
+print("*************************************************************")

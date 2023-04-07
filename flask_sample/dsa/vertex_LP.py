@@ -5,8 +5,8 @@ from collections import defaultdict
 
 
 # Define the possible values of n and q
-n_values = [100, 120, 140, 160, 180, 200]
-q_values = [0.1] #0.1 ,0.2, 0.3,0.4,0.5]
+n_values = [180,200]
+q_values = [0.1] #,0.2, 0.3,0.4,0.5]
 
 # Set the number of random graphs to generate
 M = 1
@@ -56,21 +56,22 @@ for n in n_values:
             print("LP ALGO RESULTS")
 
             # Solve the vertex cover problem using LP-based Rounding approach
-            cover = lp_vc(G)
+            cover_lp = lp_vc(G)
             
             # Calculate the total cost of the vertex cover
-            total_cost = sum([G.nodes[v]['cost'] for v in cover])
+            total_cost = sum([G.nodes[v]['cost'] for v in cover_lp])
             All_total_costs.append(total_cost)
             n_list.append(n)
             q_list.append(q)
 
             # Do whatever you want with the generated graph G and its vertex cover
             # For example, you can compute
-            print(f"Graph with n={n}, q={q} and total cost {total_cost:.2f}")
+            print(f"Graph with n={n}, q={q} and total cost {total_cost:.3f}")
 
 
-
+print("****OPTIMAL results*****")
 zipped = zip(n_list,q_list ,All_total_costs)
 
 
 print(*zipped, sep ='\n')
+print("****OPTIMAL results*****")
