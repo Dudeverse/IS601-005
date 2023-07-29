@@ -323,7 +323,6 @@ def purchase():
         print("created order data")
         # record order history
         result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
-        print(result)
         order_id = result.row["m"]
         if order_id is not None and not has_error:
             # Note: Not really an insert 1, it'll copy data from Table B into Table A
