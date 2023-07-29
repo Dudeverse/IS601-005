@@ -324,7 +324,7 @@ def purchase():
         # record order history
         result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
         order_id = result.row["m"]
-        if order_id > -1 and not has_error:
+        if order_id is not None and not has_error:
             # Note: Not really an insert 1, it'll copy data from Table B into Table A
             print("code has cometh")
             result = DB.insertOne("""INSERT INTO IS601_S_OrderItems (quantity, unit_price, order_id, product_id, user_id)
