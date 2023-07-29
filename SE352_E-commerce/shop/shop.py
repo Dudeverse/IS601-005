@@ -323,6 +323,7 @@ def purchase():
         print("created order data")
         # record order history
         result = DB.selectOne("SELECT MAX(id) as m FROM IS601_S_Orders WHERE user_id = %s", current_user.get_id())
+        print(result)
         order_id = result.row["m"]
         if order_id is not None and not has_error:
             # Note: Not really an insert 1, it'll copy data from Table B into Table A
@@ -412,7 +413,7 @@ def place_order():
         try:
             result = DB.insertOne("""INSERT INTO IS601_S_Orders (first_name, last_name, payment_method, money_received, address, user_id) VALUES (%s, %s, %s, %s, %s,%s) """, form.first_name.data, form.last_name.data, form.payment_method.data, form.money_received.data, form.address.data, current_user.get_id())
             if result.status and result.row:
-                    flash("Filled form", "success")
+                flash("Filled form", "success")
         except Exception as e:
             print("Error fetching page", e)
             flash("page not found", "danger")
