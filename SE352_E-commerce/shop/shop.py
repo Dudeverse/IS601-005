@@ -222,7 +222,7 @@ def cart_empty():
             print("Error deleting cart", e)
             flash("Error deleting cart", "danger")
     return redirect(url_for("shop.cart"))
-
+# work on a elegant logic
 @shop.route("/purchase", methods=["GET","POST"])
 @login_required
 def purchase():
