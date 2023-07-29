@@ -6,11 +6,16 @@ computers, music, movies, basically art in general.
 
 
 For Admin Experience:
+
 username: customer1
+
 password: customer1
 
+
 For guest user experience:
+
 username: customer2
+
 password: customer2
 
 
