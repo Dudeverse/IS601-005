@@ -222,7 +222,7 @@ def cart_empty():
             print("Error deleting cart", e)
             flash("Error deleting cart", "danger")
     return redirect(url_for("shop.cart"))
-
+# work on a elegant logic
 @shop.route("/purchase", methods=["GET","POST"])
 @login_required
 def purchase():
@@ -412,7 +412,7 @@ def place_order():
         try:
             result = DB.insertOne("""INSERT INTO IS601_S_Orders (first_name, last_name, payment_method, money_received, address, user_id) VALUES (%s, %s, %s, %s, %s,%s) """, form.first_name.data, form.last_name.data, form.payment_method.data, form.money_received.data, form.address.data, current_user.get_id())
             if result.status and result.row:
-                    flash("Filled form", "success")
+                flash("Filled form", "success")
         except Exception as e:
             print("Error fetching page", e)
             flash("page not found", "danger")
