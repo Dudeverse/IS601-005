@@ -28,9 +28,3 @@ Practicing Dudeism since 2021, likes to take it easy. Into
 computers, music, movies, basically art in general. 
 
 
-
-## Demo video
-
-[Final Simple Shop Project demonstration Video](https://youtu.be/ZIDKdWvCKZU)
-
-
