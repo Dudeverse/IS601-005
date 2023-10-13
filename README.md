@@ -5,13 +5,6 @@
 
 Note: You can always use the register feature. However, I don't recommend using your real email for registration. Please provide a dummy email to test the functionality. Feel free to skip this part and use the credentials below for accesing the site.
 
-## For Admin Experience:
-
-username: customer1
-
-password: customer1
-
-
 ## For Guest User Experience:
 
 username: customer2
